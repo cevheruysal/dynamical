@@ -1,0 +1,2633 @@
+\documentclass[20pt,landscape]{sciposter}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{stmaryrd}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{fix-cm}
+\usepackage{epsfig}
+\usepackage{mathrsfs}
+\usepackage{xparse}
+\usepackage{multicol}
+\usepackage{graphicx, url}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage[pdfpagelabels,bookmarks,hypertexnames=true]{hyperref}
+\usepackage{cancel}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\hypersetup{    
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={DS CheatSheet},
+    pdfauthor={A. Cevher Uysal},
+    pdfsubject={Dynamical Systems Cheat Sheet},
+    bookmarksopen=true,
+    bookmarksopenlevel=2
+}
+
+% Theorem style
+\newtheoremstyle{colonstyle}%
+  {3pt}{3pt}{}{}{\bfseries}{:}{ }{\thmname{#1}\thmnumber{ #2}\textbf{\thmnote{ (#3)}}}
+\theoremstyle{colonstyle}
+\newtheorem{Thm}{Theorem}[subsection]
+\newtheorem{Lem}[Thm]{Lemma}
+\newtheorem{Prop}[Thm]{Proposition}
+\newtheorem{Cor}[Thm]{Corollary}
+\newtheorem{Ex}[Thm]{Example}
+\newtheorem{Rem}[Thm]{Remark}
+\newtheorem{Mot}[Thm]{Motivation}
+\newtheorem{Int}[Thm]{Intuition}
+\newtheorem{Note}[Thm]{Note}
+\newtheorem*{Def}{Definition}
+
+% Proof variants
+\newenvironment{PrS}{\begin{proof}[\textbf{Proof (sketch)}]}{\end{proof}}
+\newenvironment{PrI}{\begin{proof}[\textbf{Idea of proof}]}{\end{proof}}
+
+% Custom enumerate
+\newenvironment{romanenumerate}{\begin{enumerate}[label=\textit{(\roman*).}]}{\end{enumerate}}
+
+% Operators
+\DeclareMathOperator*{\esssup}{ess\,sup}
+
+\title{Dynamical Systems -- Cheat Sheet}
+\author{Based on Lecture Notes by Christian Kühn}
+\institute{Zentrum Mathematik @ TU München}
+
+\begin{document}
+\maketitle
+
+\raggedcolumns
+\begin{multicols*}{4}
+
+\section{Definitions and Examples}
+\label{sec:def_examples}
+
+\begin{Mot}
+To study how systems evolve in time—be it mechanical, biological, or abstract mathematical—we need a general framework for describing time-evolution. This is the purpose of dynamical systems: to describe the flow of information through time across a space of possible states.
+\end{Mot}
+
+\subsection{Basic Concepts}
+\label{subsec:basic_concepts}
+
+\begin{Def}[Dynamical System]
+A dynamical system is a triplet $(X, T, \varphi_t)$, where:
+\begin{itemize}
+    \item $X$ is the \emph{phase space} (state space),
+    \item $T$ is the \emph{time set}, typically $T \subseteq \mathbb{R}$ or $T \subseteq \mathbb{Z}$,
+    \item $\varphi_t: X \to X$ is a family of evolution operators such that:
+    \begin{itemize}
+        \item (D1) $\varphi_0 = \mathrm{Id}$ (identity),
+        \item (D2) $\varphi_t \circ \varphi_s = \varphi_{t+s}$ for all $t, s \in T$.
+    \end{itemize}
+\end{itemize}
+\end{Def}
+
+\begin{Ex}[Linear ODE Flow]
+Let $X = \mathbb{R}^2$, $T = \mathbb{R}$, and $A \in \mathbb{R}^{2 \times 2}$. Then
+\[
+\varphi_t(x_0) = e^{tA} x_0 = \sum_{k=0}^\infty \frac{(tA)^k}{k!} x_0,
+\]
+is a continuous-time dynamical system derived from the ODE $x' = A x$.
+\end{Ex}
+
+\begin{Ex}[Cubic Map]
+Let $X = \mathbb{R}$, $T = \mathbb{N}_0$, and $g(x) = x^3$. Define
+\[
+x_k = \varphi_k(x_0) := g^k(x_0) = \underbrace{g \circ \cdots \circ g}_{k \text{ times}}(x_0).
+\]
+This is a discrete-time dynamical system. Since $g$ is invertible, this can be extended to $T = \mathbb{Z}$. Visualized with a cobweb plot.
+\end{Ex}
+
+\begin{Def}[Discrete vs. Continuous-Time]
+A dynamical system is:
+\begin{itemize}
+    \item \emph{Discrete-time} if $T$ has a bijection with $\mathbb{N}$ (e.g. $T = \mathbb{N}_0, \mathbb{Z}$),
+    \item \emph{Continuous-time} if $T$ is an interval or connected subset of $\mathbb{R}$.
+\end{itemize}
+\end{Def}
+
+\begin{Def}[Invertible System]
+A dynamical system is invertible if $T$ is an additive group and each $\varphi_t$ is invertible with $\varphi_{-t} = \varphi_t^{-1}$ and $\varphi_{-t} \circ \varphi_t = \mathrm{Id}$.
+\end{Def}
+
+\begin{Ex}[Logistic Map]
+Let $x_{k+1} = p x_k (1 - x_k)$ with $p \in (0, 4]$. This is a parameterized discrete-time dynamical system. The inverse is multi-valued:
+\[
+x = \frac{1}{2} \pm \sqrt{\frac{1}{4} - \frac{y}{p}},
+\]
+so we do not consider this as a flow.
+\end{Ex}
+
+\subsection{ODEs and Flows}
+\label{subsec:ode_flows}
+
+\begin{Thm}[Existence and Uniqueness]
+Let $f: \mathbb{R}^d \to \mathbb{R}^d$ be smooth. Then for the ODE:
+\[
+x' = f(x), \quad x(0) = x_0,
+\]
+there exists a unique, smooth solution $\varphi_t(x_0)$ on a maximal interval $T = (-t_1, t_2)$ such that:
+\begin{itemize}
+    \item (T1) $\varphi_0(x_0) = x_0$,
+    \item (T2) $\varphi_t(x_0)$ solves the ODE for all $t \in T$.
+\end{itemize}
+\end{Thm}
+
+\begin{Thm}[Banach Fixed-Point Theorem]
+Let $(X, d)$ be a complete metric space and $g: X \to X$ a contraction:
+\[
+d(g(x), g(y)) \le \lambda d(x, y), \quad \text{for some } \lambda \in [0,1).
+\]
+Then $g$ has a unique fixed point $x^*$ with $g(x^*) = x^*$.
+\end{Thm}
+
+\begin{Ex}[Finite-Time Blow-up]
+The ODE $x' = x^2$ has solution:
+\[
+\varphi_t(x_0) = \frac{1}{\frac{1}{x_0} - t},
+\]
+which blows up in finite time. Thus, $\varphi_t$ only defines a local flow.
+\end{Ex}
+
+\begin{Def}[Smooth Dynamical System]
+If $\varphi_t(x)$ is smooth in $(t, x)$, we call $(X, T, \varphi_t)$ a smooth dynamical system. More generally, a $C^k$ system is $k$-times differentiable.
+\end{Def}
+
+\subsection{Orbits and Invariant Sets}
+\label{subsec:orbits_invariant}
+
+\begin{Def}[Orbit]
+The orbit of $x_0$ is:
+\[
+\operatorname{Or}(x_0) = \{\varphi_t(x_0) : t \in T \text{ where defined} \}.
+\]
+\end{Def}
+
+\begin{Def}[Fixed Point / Equilibrium]
+A point $x^* \in X$ is a fixed point if $\varphi_t(x^*) = x^*$ for all $t \in T$. For ODEs, this is called an \emph{equilibrium point}.
+\end{Def}
+
+\begin{Ex}[Van der Pol System]
+\[
+x' = y - \frac{x^3}{3} + x, \quad y' = -p x, \quad p > 0.
+\]
+The origin $(0,0)$ is the unique equilibrium. Nullclines are:
+\[
+x' = 0 \Rightarrow y = \frac{x^3}{3} - x, \quad y' = 0 \Rightarrow x = 0.
+\]
+\end{Ex}
+
+\begin{Def}[Nullclines]
+The nullclines of the system $x' = f(x)$ are the level sets $\{x \in \mathbb{R}^d : f_k(x) = 0\}$ for $k = 1,\dots,d$.
+\end{Def}
+
+\begin{Def}[Invariant Sets]
+A set $S \subset X$ is:
+\begin{itemize}
+    \item \textbf{Invariant} if $\varphi_t(x_0) \in S$ for all $t$ and all $x_0 \in S$,
+    \item \textbf{Positively invariant} if the above holds for $t > 0$,
+    \item \textbf{Negatively invariant} if it holds for $t < 0$.
+\end{itemize}
+\end{Def}
+
+\begin{Ex}[Symbolic Dynamics]
+Let $X = \Sigma_2$ be the space of bi-infinite binary sequences, and define the shift map:
+\[
+g(\omega)_j = \omega_{j+1}.
+\]
+Then $g$ is a discrete-time dynamical system with fixed points $\omega = \dots 000 \dots$ and $\omega = \dots 111 \dots$.
+\end{Ex}
+
+\subsection{Periodic Orbits and Phase Portraits}
+\label{subsec:periodic_portraits}
+
+\begin{Def}[Periodic Orbit]
+An orbit $\gamma$ is periodic if there exists $T_0 > 0$ such that:
+\[
+\varphi_{t+T_0}(x_0) = \varphi_t(x_0) \quad \text{for all } t \in T.
+\]
+The smallest such $T_0$ is called the \emph{period} of the orbit.
+\end{Def}
+
+\begin{Ex}[Circle Rotation]
+Let $X = \mathbb{S}^1 = [0,1)/\sim$, $T = \mathbb{N}_0$, and define:
+\[
+x_{k+1} = (x_k + r) \mod 1, \quad r = \frac{p}{q} \in \mathbb{Q}.
+\]
+Then each point $x_0$ lies on a periodic orbit of period $q$.
+\end{Ex}
+
+\begin{Def}[Phase Portrait]
+The phase portrait of a dynamical system is the decomposition of $X$ into its orbits. It gives a geometric representation of the system’s dynamics.
+\end{Def}
+
+\begin{Note}
+The historical shift in viewpoint:
+\begin{itemize}
+    \item \textbf{17th c. (Newton):} Solve ODEs analytically.
+    \item \textbf{19th c. (Poincaré):} Understand the geometry of the flow.
+    \item \textbf{20th c. (Modern):} Understand qualitative dynamics, even without explicit equations.
+\end{itemize}
+\end{Note}
+
+\section{Stability}
+\label{sec:stability}
+
+\begin{Mot}
+Understanding the long-term behavior of solutions to dynamical systems begins with the study of equilibrium (steady state) solutions and their stability. A stable equilibrium attracts nearby trajectories, while an unstable one repels them. This chapter introduces key concepts like Lyapunov stability, asymptotic stability, Lyapunov functions, LaSalle’s Invariance Principle, and linearization techniques.
+\end{Mot}
+
+\subsection{Definitions of Stability}
+\label{subsec:stability_defs}
+
+\begin{Def}[Lyapunov Stability]
+Let $x^*$ be a steady state (equilibrium) of a dynamical system $(X, T, \varphi_t)$. Then $x^*$ is:
+\begin{itemize}
+    \item \textbf{Stable} if for every neighborhood $U = U(x^*)$, there exists a neighborhood $V = V(x^*) \subseteq U$ such that $\varphi_t(V) \subseteq U$ for all $t \ge 0$.
+    \item \textbf{Asymptotically stable} if it is stable and there exists a neighborhood $U$ such that
+    \[
+    \lim_{t \to +\infty} \varphi_t(x_0) = x^*, \quad \forall x_0 \in U.
+    \]
+    \item \textbf{Globally asymptotically stable} if $U = X$.
+\end{itemize}
+\end{Def}
+
+\begin{Note}
+We assume $X$ is a metric space, usually $X = \mathbb{R}^d$ with the Euclidean norm. In this setting, asymptotic stability can be expressed as:
+\[
+\lim_{t \to +\infty} |\varphi_t(x_0) - x^*| = 0.
+\]
+\end{Note}
+
+\begin{Ex}[Harmonic Oscillator]
+The system
+\[
+\ddot{x} + x = 0
+\quad \text{or} \quad
+\begin{pmatrix}
+x' \\ y'
+\end{pmatrix}
+=
+\begin{pmatrix}
+0 & 1 \\
+-1 & 0
+\end{pmatrix}
+\begin{pmatrix}
+x \\ y
+\end{pmatrix}
+\]
+has general solution $(x(t), y(t)) = (c_1 \cos t + c_2 \sin t, c_2 \cos t - c_1 \sin t)$. The origin is Lyapunov stable but not asymptotically stable (it is a center).
+\end{Ex}
+
+\subsection{Lyapunov Functions}
+\label{subsec:lyapfunc}
+
+\begin{Def}[Lyapunov Function]
+Let $x^*$ be an equilibrium for $x' = f(x)$. A function $L: U \to \mathbb{R}$ defined on a neighborhood $U$ of $x^*$ is called a Lyapunov function if:
+\begin{itemize}
+    \item[(D1)] $L$ is continuous,
+    \item[(D2)] $L(x^*) = 0$ and $L(x) > 0$ for all $x \ne x^*$,
+    \item[(D3)] $L$ decreases along orbits:
+    \[
+    L(\varphi_{t_0}(x_0)) \ge L(\varphi_{t_1}(x_0)) \quad \text{for } t_0 < t_1.
+    \]
+\end{itemize}
+It is called \emph{strict} if equality in (D3) never occurs.
+\end{Def}
+
+\begin{Thm}[Lyapunov Stability Criterion]
+Let $x^*$ be an equilibrium and suppose a Lyapunov function exists. Then $x^*$ is Lyapunov stable.
+\end{Thm}
+
+\begin{PrS}
+Consider the sublevel set $S_\delta = \{x \in U : L(x) \le \delta\}$ containing $x^*$. For any $\delta > 0$ small enough, there exists $\varepsilon > 0$ such that $S_\varepsilon \subset B(x^*; \delta)$. $S_\varepsilon$ is positively invariant by contradiction: if a point leaves $S_\varepsilon$, then $L$ must increase, contradicting (D3).
+\end{PrS}
+
+\subsection{LaSalle’s Invariance Principle}
+\label{subsec:lasalle}
+
+\begin{Def}[$\omega$- and $\alpha$-limit Sets]
+For any $x \in X$,
+\[
+\omega(x) = \left\{ y \in X : \exists t_j \to +\infty \text{ s.t. } \lim_{j \to \infty} \varphi_{t_j}(x) = y \right\},
+\]
+\[
+\alpha(x) = \left\{ y \in X : \exists t_j \to -\infty \text{ s.t. } \lim_{j \to \infty} \varphi_{t_j}(x) = y \right\}.
+\]
+\end{Def}
+
+\begin{Thm}[LaSalle's Invariance Principle]
+Let $x^*$ be an equilibrium, and $L$ a Lyapunov function defined on a neighborhood $U$ such that $L$ is not constant on any nontrivial orbit. Then $x^*$ is asymptotically stable.
+\end{Thm}
+
+\begin{PrS}
+Because $L$ is non-increasing and bounded below, the limit $\lim_{t \to \infty} L(\varphi_t(x))$ exists. For any $y \in \omega(x)$, we must have $L(y) = \lim_{t \to \infty} L(\varphi_t(x))$. Thus $L$ is constant on $\omega(x)$. Since $L$ is not constant on nontrivial orbits, $\omega(x) = \{x^*\}$.
+\end{PrS}
+
+\begin{Note}
+If $L$ is differentiable, (D3) becomes:
+\[
+\frac{d}{dt}L(\varphi_t(x)) = \nabla L(\varphi_t(x)) \cdot f(\varphi_t(x)) \le 0,
+\]
+where $\nabla L(x) \cdot f(x)$ is called the \emph{Lie derivative} of $L$ along $f$.
+\end{Note}
+
+\begin{Def}[First Integral]
+A function $g: \mathbb{R}^d \to \mathbb{R}$ is a first integral (or constant of motion) if the Lie derivative vanishes: $\nabla g(x) \cdot f(x) = 0$ for all $x$.
+\end{Def}
+
+\begin{Ex}[Harmonic Oscillator (Again)]
+$L(x,y) = x^2 + y^2$ is a Lyapunov function and a first integral:
+\[
+\nabla L \cdot f =
+\begin{pmatrix}
+2x \\ 2y
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+y \\ -x
+\end{pmatrix}
+= 0.
+\]
+\end{Ex}
+
+\begin{Ex}[Hamiltonian Systems]
+For a particle with mass 1 in a potential $V:\mathbb{R}^d \to \mathbb{R}$, we get
+\[
+x' = y = \partial_y H, \quad y' = -\nabla V(x) = -\partial_x H,
+\]
+where $H(x,y) = \frac{1}{2}|y|^2 + V(x)$. $H$ is a first integral but not generally a Lyapunov function.
+\end{Ex}
+
+\subsection{Linearization and Stability}
+\label{subsec:linearization}
+
+\begin{Thm}[Linear Stability Theorem]
+Consider the linear system $x' = A x$.
+\begin{itemize}
+    \item[(T1)] If all eigenvalues $\lambda_j = a_j + i b_j$ satisfy $a_j < 0$, then $x^* = 0$ is asymptotically stable.
+    \item[(T2)] If some eigenvalue satisfies $a_j > 0$, then $x^* = 0$ is unstable.
+\end{itemize}
+\end{Thm}
+
+\begin{Note}
+Jordan form $A = Q J Q^{-1}$ reduces the analysis to understanding exponential terms like $e^{\lambda t}$ and polynomial corrections for non-diagonal blocks.
+\end{Note}
+
+\begin{Def}[Linear Classification in $\mathbb{R}^2$]
+Given eigenvalues $\lambda_{1,2} = a_{1,2} + i b_{1,2}$:
+\begin{itemize}
+    \item \textbf{Node:} $b_1 = b_2 = 0$, $a_1 a_2 > 0$,
+    \item \textbf{Saddle:} $b_1 = b_2 = 0$, $a_1 a_2 < 0$,
+    \item \textbf{Focus:} $b_1 \ne 0$, $a_1 \ne 0$,
+    \item \textbf{Center:} $a_1 = a_2 = 0$, $b_1 \ne 0$,
+\end{itemize}
+with additional qualifiers (e.g., “stable node” if $a_1, a_2 < 0$).
+\end{Def}
+
+\begin{Note}
+For discrete-time linear systems $x_{k+1} = A x_k$, the fixed point $x^* = 0$ is asymptotically stable if all eigenvalues $\mu_j$ satisfy $|\mu_j| < 1$ (these are called multipliers).
+\end{Note}
+
+\section{Stable and Unstable Manifolds}
+\label{sec:stable_unstable}
+
+\begin{Mot}
+Near a hyperbolic fixed point, the local behavior of a nonlinear dynamical system is governed by the stable and unstable directions of the linearized system. The stable and unstable manifolds extend these directions nonlinearly, providing a geometric framework for understanding long-term behavior near equilibria or fixed points.
+\end{Mot}
+
+\subsection{Differentiable Manifolds}
+\label{subsec:manifold_basics}
+
+\begin{Def}[Topological Manifold]
+A $d$-dimensional topological manifold $M$ is a second-countable Hausdorff topological space such that each point $x \in M$ has a neighborhood homeomorphic to an open set in $\mathbb{R}^d$.
+\end{Def}
+
+\begin{Def}[$C^k$-Manifold]
+A $d$-dimensional $C^k$-manifold is a topological manifold equipped with a maximal atlas whose chart transitions are $C^k$-smooth:
+\[
+h_\alpha \circ h_\beta^{-1} \in C^k \quad \text{on } h_\beta(U_\alpha \cap U_\beta).
+\]
+\end{Def}
+
+\begin{Rem}
+Every $d \le 3$ topological manifold admits a smooth structure, but this fails for $d \ge 4$.
+\end{Rem}
+
+\begin{Ex}
+Examples of $C^k$ manifolds include:
+\begin{itemize}
+    \item $\mathbb{R}^d$,
+    \item Intervals and rectangles in $\mathbb{R}^d$,
+    \item Torus $T^d = \mathbb{R}^d / \mathbb{Z}^d$,
+    \item Sphere $S^d = \{x \in \mathbb{R}^{d+1} : |x| = 1\}$.
+\end{itemize}
+\end{Ex}
+
+\begin{Def}[Tangent Space]
+A $C^1$-curve $\gamma: (-s, s) \to M$ defines a tangent vector at $x = \gamma(0)$ via
+\[
+v(f) = \left. \frac{d}{dt} f(\gamma(t)) \right|_{t=0}, \quad \forall f \in C^1(M, \mathbb{R}).
+\]
+The collection of all such $v$ forms the tangent space $T_x M$.
+\end{Def}
+
+\subsection{Hyperbolicity}
+\label{subsec:hyperbolicity}
+
+\begin{Def}[Hyperbolic Equilibrium]
+Let $f \in C^1$. An equilibrium $x^*$ of the ODE $x' = f(x)$ is called \emph{hyperbolic} if the Jacobian $Df(x^*)$ has no eigenvalues with zero real parts.
+\end{Def}
+
+\begin{Def}[Hyperbolic Fixed Point (Map)]
+For a differentiable map $g$, a fixed point $x^*$ is hyperbolic if all eigenvalues (multipliers) of $Dg(x^*)$ satisfy $|\mu| \ne 1$.
+\end{Def}
+
+\begin{Note}
+For hyperbolic matrices $A = Df(x^*)$, we define:
+\[
+E^s = \{ y : e^{tA} y \to 0 \text{ as } t \to +\infty \}, \quad 
+E^u = \{ y : e^{tA} y \to 0 \text{ as } t \to -\infty \}.
+\]
+We obtain a decomposition $\mathbb{R}^d = E^s \oplus E^u$ with projections $P^s$, $P^u$.
+\end{Note}
+
+\subsection{Stable/Unstable Manifold Theorem (Flows)}
+\label{subsec:su_flows}
+
+\begin{Thm}[Stable/Unstable Manifolds for Flows]
+Let $x^*$ be a hyperbolic equilibrium of $x' = f(x)$, $f \in C^1$. Then there exists a neighborhood $U$ of $x^*$ and differentiable manifolds $W^s_{\mathrm{loc}}(x^*)$, $W^u_{\mathrm{loc}}(x^*)$ such that:
+\begin{align*}
+W^s_{\mathrm{loc}}(x^*) &= \{ y \in U : \varphi_t(y) \in U \,\,\forall t \ge 0,\; \varphi_t(y) \to x^* \text{ as } t \to +\infty \}, \\
+W^u_{\mathrm{loc}}(x^*) &= \{ y \in U : \varphi_t(y) \in U \,\,\forall t \le 0,\; \varphi_t(y) \to x^* \text{ as } t \to -\infty \}.
+\end{align*}
+Moreover, $W^{s/u}_{\mathrm{loc}}(x^*)$ are tangent to $E^{s/u}$ at $x^*$.
+\end{Thm}
+
+\begin{Note}
+The manifolds can be constructed using the Lyapunov–Perron method. Solutions are written using the variation-of-constants formula, and fixed-point iteration is applied in a suitable Banach space.
+\end{Note}
+
+\begin{Note}
+If $f \in C^k$, the local stable/unstable manifolds are $C^k$. If $f$ is analytic ($C^\omega$), so are the manifolds. Global stable/unstable manifolds are obtained via flow extension:
+\[
+W^{s/u}(x^*) = \bigcup_{t \in \mathbb{R}} \varphi_t(W^{s/u}_{\mathrm{loc}}(x^*)).
+\]
+\end{Note}
+
+\subsection{Stable/Unstable Manifolds for Maps}
+\label{subsec:su_maps}
+
+\begin{Thm}[Stable/Unstable Manifolds for Diffeomorphisms]
+Let $g: \mathbb{R}^d \to \mathbb{R}^d$ be a $C^1$-diffeomorphism with a hyperbolic fixed point $x^*$. Then there exist neighborhoods $U$ of $x^*$ and differentiable manifolds $W^{s/u}_{\mathrm{loc}}(x^*)$ such that:
+\begin{align*}
+W^s_{\mathrm{loc}}(x^*) &= \{ y \in U : g^k(y) \to x^* \text{ as } k \to +\infty \}, \\
+W^u_{\mathrm{loc}}(x^*) &= \{ y \in U : g^{-k}(y) \to x^* \text{ as } k \to +\infty \}.
+\end{align*}
+They are tangent to $E^{s/u}$ at $x^*$.
+\end{Thm}
+
+\begin{Note}[Hadamard–Perron Method]
+The manifold is constructed as the fixed point of the \emph{graph transform}:
+\[
+\mathcal{G}(\varphi) := \text{projection of } g^{-1}(\operatorname{graph}(\varphi)) \text{ back onto } E^s.
+\]
+Under suitable conditions, this is a contraction in a space of Lipschitz functions.
+\end{Note}
+
+\columnbreak
+
+\subsection{Examples}
+\label{subsec:examples_su}
+
+\begin{Ex}[Duffing Oscillator]
+Consider the second-order ODE:
+\[
+x'' + \delta x' - x + p x^3 = 0.
+\]
+Rewriting as a first-order system gives:
+\[
+x' = y, \quad y' = -\delta y + x - p x^3.
+\]
+The origin is a hyperbolic saddle for $\delta = 0$, with $\dim E^s = \dim E^u = 1$. Thus, there exist one-dimensional stable and unstable manifolds.
+\end{Ex}
+
+\begin{Ex}[Arnold's Cat Map]
+Let $g(x) = A x$ with $A = \begin{pmatrix}2 & 1\\ 1 & 1\end{pmatrix}$. Then $g: \mathbb{T}^2 \to \mathbb{T}^2$ (mod $\mathbb{Z}^2$) is a hyperbolic toral automorphism. Every point has local stable and unstable manifolds; this is a classic example in hyperbolic dynamics.
+\end{Ex}
+
+\section{Equivalence}
+\label{sec:equivalence}
+
+\begin{Mot}
+Often, different dynamical systems exhibit qualitatively similar behavior. Instead of solving each one exactly, we aim to classify systems up to transformations that preserve essential dynamical features. Equivalence and conjugacy offer a precise language for such comparisons, particularly near fixed points.
+\end{Mot}
+
+\subsection{Topological and Smooth Equivalence}
+
+\begin{Def}[Topological Equivalence]
+Two dynamical systems $(X, T, \varphi_t)$ and $(X, T, \psi_t)$ are \emph{topologically equivalent} if there exists a homeomorphism $h : X \to X$ such that $h$ maps orbits of $\varphi_t$ to orbits of $\psi_t$ and preserves the direction of time. If time parametrization is also preserved, the systems are called \emph{conjugate}.
+\end{Def}
+
+\begin{Def}[$C^k$-Equivalence and Conjugacy]
+If $h, h^{-1} \in C^k$, then the systems are $C^k$-equivalent. If time is preserved as well and $h$ is a $C^k$-diffeomorphism, then the systems are $C^k$-conjugate.
+\end{Def}
+
+\begin{Prop}[Discrete-Time Conjugacy]
+Two maps $x \mapsto f(x)$ and $y \mapsto g(y)$ are topologically conjugate if and only if there exists a homeomorphism $h : \mathbb{R}^d \to \mathbb{R}^d$ such that
+\[
+f = h^{-1} \circ g \circ h.
+\]
+\end{Prop}
+
+\begin{PrS}
+Topological equivalence implies $h(f(x)) = g(h(x))$. Since $h$ is invertible, we get $f = h^{-1} \circ g \circ h$.
+\end{PrS}
+
+\begin{Prop}[Continuous-Time $C^1$-Conjugacy]
+Let $\varphi_t$ and $\psi_t$ be flows generated by $x' = f(x)$ and $y' = g(y)$ respectively, with $f, g \in C^1$. Suppose $y = h(x)$ for a $C^1$-diffeomorphism $h$. Then
+\[
+f(x) = (Dh(x))^{-1} g(h(x)).
+\]
+\end{Prop}
+
+\begin{Def}[Local Topological Equivalence Near Equilibrium]
+Let $x^*$ be an equilibrium. A dynamical system $(X, T, \varphi_t)$ is locally topologically equivalent to $(X, T, \psi_t)$ near $x^*$ if there exists a homeomorphism $h: U(x^*) \to V(y^*)$ mapping orbits locally and preserving time direction.
+\end{Def}
+
+\subsection{Hartman–Grobman Theorem}
+
+\begin{Thm}[Hartman–Grobman]
+Let $x' = f(x)$ with $f \in C^1$, and suppose $x^*$ is a hyperbolic equilibrium. Then the flow $\varphi_t$ is locally topologically conjugate near $x^*$ to the flow $e^{tA}$ of the linearized system $x' = A x$ where $A = Df(x^*)$.
+\end{Thm}
+
+\subsection{Linearization for Maps}
+
+\begin{Thm}[Linearization Near Hyperbolic Fixed Point]
+Let $g(x) = Ax + R(x)$, with $g \in C^1$ and $g$ invertible. Suppose $x=0$ is a hyperbolic fixed point. Then there exists a unique homeomorphism $h(x) = x + H(x)$ with $H(0) = 0$ such that
+\[
+h \circ A = g \circ h.
+\]
+\end{Thm}
+
+\begin{PrS}
+Let $A$ have stable and unstable subspaces $E^s$, $E^u$ with a matrix norm $\|\cdot\|$ such that
+\[
+\alpha := \max(\|A^{-1}_u\|, \|A_s\|) < 1.
+\]
+We define a nonlinear operator equation
+\[
+H(Ax) - A H(x) = R(x + H(x)),
+\]
+and solve it via Banach’s fixed point theorem in a suitable Banach space. The operator $L = K - A$ is shown to be invertible, and the contraction estimate yields a unique fixed point $H$. Invertibility of $h = \mathrm{Id} + H$ follows via a symmetric construction of an inverse $\tilde{h}$.
+\end{PrS}
+
+\begin{Note}
+This result yields local topological conjugacy between $g$ and $A$. The Hartman–Grobman theorem is proven using this linearization for the time-one map $\varphi_1(x) = e^{A} x + R(x)$ and then defining $h_s := \varphi_s \circ h \circ e^{-sA}$ to extend the conjugacy to all times.
+\end{Note}
+
+\columnbreak
+
+\section{Poincaré Maps}
+\label{sec:poincare_maps}
+
+\begin{Mot}
+Poincaré maps reduce the study of continuous-time flows to discrete-time dynamics by recording successive intersections of trajectories with a transversal section. This tool is particularly powerful for analyzing the stability of periodic orbits.
+\end{Mot}
+
+\subsection{Construction and Existence}
+
+\begin{Def}[Poincaré Section]
+Let $\Gamma(t)$ be a periodic orbit of a flow $\varphi_t$ generated by $x' = f(x)$, $x \in \mathbb{R}^d$, $f \in C^1$. A \emph{Poincaré section} at $y \in \Gamma$ is defined by
+\[
+\Sigma := \{x \in \mathbb{R}^d : (x - y) \cdot f(y) = 0\}.
+\]
+This is a hyperplane transverse to the flow at $y$.
+\end{Def}
+
+\begin{Thm}[Existence and Smoothness of the Poincaré Map]
+\label{thm:poincare_map}
+There exists $\delta > 0$ and a function $\tau : B(y; \delta) \to \mathbb{R}$ with $\tau \in C^1$, $\tau(y) = T$, such that
+\[
+\varphi_{\tau(x)}(x) \in \Sigma \quad \forall x \in B(y; \delta).
+\]
+The \emph{Poincaré map} $P : \Sigma \to \Sigma$ is then defined locally as
+\[
+P(x) := \varphi_{\tau(x)}(x),
+\]
+and is $C^1$ on $B(y; \delta) \cap \Sigma$.
+\end{Thm}
+
+\begin{proof}
+Define $F(t,x) := (\varphi_t(x) - y) \cdot f(y)$, which is $C^1$. Since $F(T, y) = 0$ and
+\[
+\partial_t F(T, y) = |f(y)|^2 \ne 0,
+\]
+the implicit function theorem yields a unique $C^1$ function $\tau(x)$ with $\tau(y) = T$ and $F(\tau(x), x) = 0$.
+\end{proof}
+
+\subsection{Properties and Stability}
+
+\begin{Def}[Multipliers]
+Let $A := DP(0)$ be the Jacobian of the Poincaré map at the fixed point $0 \in \Sigma$ (where $\Gamma$ intersects $\Sigma$). The eigenvalues $\mu_1, \dots, \mu_{d-1}$ of $A$ are called \emph{multipliers} of the periodic orbit.
+\end{Def}
+
+\begin{Prop}
+The multipliers are independent of:
+\begin{itemize}
+  \item the choice of point $y$ on the orbit,
+  \item the cross-section $\Sigma$,
+  \item the local coordinate system.
+\end{itemize}
+\end{Prop}
+
+\begin{proof}
+Any two local Poincaré maps $P$, $\tilde{P}$ are conjugate via a diffeomorphism $h$: $P = h^{-1} \circ \tilde{P} \circ h$. Therefore,
+\[
+DP(0) = B^{-1} D\tilde{P}(0) B,
+\]
+so $\mu_j$ are invariant under coordinate changes.
+\end{proof}
+
+\begin{Ex}
+Consider the planar system:
+\[
+x' = -y + x(p - x^2 - y^2), \quad y' = x + y(p - x^2 - y^2).
+\]
+For suitable $p$, this has a limit cycle. Its multiplier $\mu$ can be computed in polar coordinates (exercise).
+\end{Ex}
+
+\begin{Note}
+The stability of the periodic orbit is determined by the magnitude of its multipliers. If all $|\mu_j| < 1$, the orbit is asymptotically stable.
+\end{Note}
+
+\subsection{Variational Equation and Monodromy Matrix}
+
+\begin{Def}[Variational Equation]
+Let $\Gamma(t)$ be a periodic solution. The linearized dynamics near $\Gamma$ are governed by the variational equation:
+\[
+u' = A(t) u, \quad \text{where } A(t) = Df(\Gamma(t)).
+\]
+\end{Def}
+
+\begin{Def}[Monodromy Matrix]
+A matrix $M(t)$ is a \emph{fundamental solution} of the variational equation if $M(0) = \mathrm{Id}$ and $M'(t) = A(t) M(t)$. The matrix $M(T)$ is called the \emph{monodromy matrix}.
+\end{Def}
+
+\begin{Thm}
+The monodromy matrix $M(T)$ has eigenvalues $1, \mu_1, \dots, \mu_{d-1}$, where $\mu_j$ are the multipliers of the Poincaré map.
+\end{Thm}
+
+\begin{proof}[Sketch]
+Near $y \in \Gamma$, use rectified coordinates with $f(y) = (0, \dots, 0, 1)^T$ and the flow $\varphi_t(x)$. We write:
+\[
+DP(y) = \partial_t \varphi(T, y) \cdot (\nabla \tau(y))^\top + D_x \varphi(T, y).
+\]
+We identify $D_x \varphi(T, y) = M(T)$, and the structure of $M(T)$ shows it has a 1 eigenvalue in the direction of $\Gamma'$ and $\mu_j$ in the transverse directions.
+\end{proof}
+
+\subsection{Realizability of Maps as Time-$T$ Flow}
+
+\begin{Ex}
+The map $g(x) = -\frac{1}{2}x$ has no realization as the time-$T$ map of a flow $x' = f(x)$ on $\mathbb{R}$.
+\end{Ex}
+
+\begin{Thm}[Suspension Flow]
+Given any diffeomorphism $g : \mathbb{R}^d \to \mathbb{R}^d$, there exists a $(d+1)$-dimensional manifold $M$ and an ODE on $M$ such that $g$ is the time-$T$ map of the flow.
+\end{Thm}
+
+\begin{proof}
+Fix $T > 0$, and define
+\[
+M := \{(x, t) \in \mathbb{R}^d \times \mathbb{R} : t \in [0, T] \}/ \sim, \quad \text{where } (g(x), 0) \sim (x, T).
+\]
+Define the flow by $(x', t') = (0, 1)$. The map $g$ acts as the return map on the slice $t = 0$.
+\end{proof}
+
+\section{Structural Stability}
+\label{sec:structural_stability}
+
+\begin{Mot}
+Rather than studying each dynamical system individually, we seek to understand typical behavior of systems under small perturbations. Structural stability captures the idea that a system's qualitative behavior persists under small changes. This chapter explores precise definitions and criteria for such robustness, including Peixoto’s Theorem and Morse-Smale systems.
+\end{Mot}
+
+\subsection{Function Spaces and Metrics}
+
+\begin{Def}[Function Space \texorpdfstring{$C^k(K,\mathbb{R}^d)$}{Ck(K,Rd)}]
+Let $K \subset \mathbb{R}^d$ be compact. Then $C^k(K,\mathbb{R}^d)$ denotes the space of all $f = (f_1, \dots, f_d)^T$ such that
+\[
+\|f\|_{C^k} = \sum_{|\alpha| = 0}^{k} \sup_{x \in K} |D^\alpha f_l(x)| < \infty,
+\]
+where $\alpha = (\alpha_1, \dots, \alpha_d)$ is a multi-index and $D^\alpha = \partial^{\alpha_1}_{x_1} \cdots \partial^{\alpha_d}_{x_d}$.
+\end{Def}
+
+\begin{Note}
+$C^k(K,\mathbb{R}^d)$ is a Banach space. On non-compact $K$, we may use metrics like:
+\[
+d_0(f,g) = \min\left\{1, \sup_{x \in K} \frac{|f(x) - g(x)|}{1 + |f(x) - g(x)|} \right\},
+\]
+which generalize to manifolds with a metric $d(x,y) = |x - y|$.
+\end{Note}
+
+\subsection{Definition of Structural Stability}
+
+\begin{Def}[Structural Stability]
+Let $f \in C^1(M)$ be a vector field on a smooth manifold $M$. We say $f$ is \emph{structurally stable} if there exists $\varepsilon > 0$ such that for all $g \in C^1(M)$ with $\|f - g\|_{C^1} < \varepsilon$, the flows generated by $f$ and $g$ are topologically equivalent.
+\end{Def}
+
+\begin{Def}[Topological Equivalence]
+Two flows $\varphi_t$ and $\psi_t$ on $M$ are topologically equivalent if there exists a homeomorphism $h : M \to M$ such that
+\[
+h(\varphi_t(x)) = \psi_t(h(x)), \quad \forall t \in \mathbb{R}, \, x \in M.
+\]
+\end{Def}
+
+\begin{Ex}
+Let $f$ on the torus $\mathbb{T}^2 = \mathbb{R}^2/\mathbb{Z}^2$ be defined by
+\[
+x' = \omega_1, \quad y' = \omega_2.
+\]
+Then $f$ is structurally unstable: if $\omega_1/\omega_2 \in \mathbb{Q}$ all orbits are periodic, but for $\omega_1/\omega_2 \notin \mathbb{Q}$ all orbits are dense (irrational flow).
+\end{Ex}
+
+\subsection{Nonwandering Set and Peixoto’s Theorem}
+
+\begin{Def}[Nonwandering Point]
+Let $\varphi_t$ be a flow on $X$. A point $x \in X$ is nonwandering if for every neighborhood $U$ of $x$ and every $t_0$, there exists $t > t_0$ such that
+\[
+\varphi_t(U) \cap U \ne \emptyset.
+\]
+The set of all such points is the \emph{nonwandering set} $\text{NW}(\varphi)$.
+\end{Def}
+
+\begin{Thm}[Peixoto’s Theorem]
+Let $f$ be a $C^1$ vector field on a compact, two-dimensional differentiable manifold $M$. Then $f$ is structurally stable if and only if:
+\begin{enumerate}
+    \item[(T1)] The number of equilibria and periodic orbits is finite and all are hyperbolic.
+    \item[(T2)] There are no saddle-to-saddle connections: if $x, y$ are saddle points, then $W^s(x) \cap W^u(y) = \emptyset$.
+    \item[(T3)] The nonwandering set $\text{NW}(\varphi)$ consists only of equilibria and periodic orbits.
+\end{enumerate}
+Moreover, if $M$ is orientable, the set of structurally stable vector fields is open and dense in $C^1(M)$.
+\end{Thm}
+
+\begin{Rem}
+Peixoto’s theorem does not generalize to $d \geq 3$. However, Morse-Smale systems retain structural stability in higher dimensions.
+\end{Rem}
+
+\subsection{Morse-Smale Systems}
+
+\begin{Def}[Morse-Smale System]
+A flow $\varphi_t$ is a Morse-Smale flow if:
+\begin{enumerate}
+    \item[(D1)] The number of periodic orbits and equilibria is finite and all are hyperbolic.
+    \item[(D2)] Stable and unstable manifolds intersect transversally.
+    \item[(D3)] The nonwandering set consists only of equilibria and periodic orbits.
+\end{enumerate}
+\end{Def}
+
+\begin{Thm}[Morse-Smale Stability]
+Let $M$ be a compact differentiable manifold. Then Morse-Smale flows on $M$ are structurally stable in the $C^1$ topology.
+\end{Thm}
+
+\subsection{Generic Properties}
+
+\begin{Def}[Generic Property]
+A property $P$ in a topological space $Z$ is called \emph{generic} if it holds on a residual set, i.e., a countable intersection of open dense subsets of $Z$.
+\end{Def}
+
+\begin{Note}
+Peixoto's theorem implies that structural stability is a generic property in $C^1(M)$ for compact, orientable, two-dimensional manifolds. For $d \ge 3$, Morse-Smale systems are not generic.
+\end{Note}
+
+\begin{Ex}
+Let $Z = \mathbb{R}^{d \times d}$ and define the property $P$ as: matrix $A \in Z$ is hyperbolic (i.e., no eigenvalues on the imaginary axis). Then $P$ is a generic property in $Z$.
+\end{Ex}
+
+\columnbreak
+
+\section{Hyperbolic Sets}
+\label{sec:hyperbolic_sets}
+
+\begin{Mot}
+Hyperbolic sets generalize hyperbolic fixed points and provide the correct framework for robust behavior in dynamical systems. They form the foundation for structural stability and shadowing theorems, and persist under perturbations, making them central in modern dynamics.
+\end{Mot}
+
+\subsection{Definition and Properties}
+
+Let $M$ be a $C^1$ Riemannian manifold with metric induced by a family of symmetric bilinear forms $\langle \cdot, \cdot \rangle_x$ on each $T_xM$. Define the norm $|v| := \sqrt{\langle v, v \rangle}$ and the length of a $C^1$ curve $\gamma: [a, b] \to M$ as $\int_a^b |\gamma'(s)| \, ds$.
+
+\begin{Def}[Hyperbolic Set]
+A compact $g$-invariant set $\Lambda \subset M$ is \emph{hyperbolic} for a $C^1$ diffeomorphism $g: M \to M$ if there exist:
+\begin{itemize}
+  \item constants $C > 0$, $\lambda \in (0,1)$,
+  \item subspaces $E^s(x), E^u(x) \subset T_x M$ for each $x \in \Lambda$,
+\end{itemize}
+such that:
+\begin{enumerate}
+  \item[(D1)] Invariance: $Dg_x E^s(x) = E^s(g(x))$, $Dg_x E^u(x) = E^u(g(x))$,
+  \item[(D2)] Stability: $|Dg^j_x v^s| \leq C \lambda^j |v^s|$ for $v^s \in E^s(x)$, $j \ge 0$,
+  \item[(D3)] Instability: $|Dg^{-j}_x v^u| \leq C \lambda^j |v^u|$ for $v^u \in E^u(x)$, $j \ge 0$,
+  \item[(D4)] Splitting: $T_xM = E^s(x) \oplus E^u(x)$.
+\end{enumerate}
+\end{Def}
+
+\begin{Ex}
+The toral automorphism $g(x) = Ax$ on $\mathbb{T}^2$ with $A = \begin{pmatrix}2 & 1\\1 & 1\end{pmatrix}$ is Anosov, and satisfies the hyperbolicity condition with $\Lambda = M$.
+\end{Ex}
+
+\begin{Def}[Anosov Diffeomorphism]
+If the entire manifold $M = \Lambda$ is a hyperbolic set for $g$, then $g$ is called an \emph{Anosov diffeomorphism}.
+\end{Def}
+
+\subsection{Structural Stability of Hyperbolic Sets}
+
+\begin{Thm}
+Let $\Lambda$ be a hyperbolic set for $g : M \to M$. Then:
+\begin{itemize}
+  \item There exists a neighborhood $U$ of $\Lambda$ and $\varepsilon_1 > 0$ such that for any $C^1$-map $f$ with $d_0(Df, Dg) \le \varepsilon_1$, and any continuous map $\varphi: Y \to U$, if
+  \[
+  d_0(\varphi \circ h, f \circ \varphi) \le \delta,
+  \]
+  then there exists a unique continuous map $\psi: Y \to U$ with
+  \[
+  \psi \circ h = f \circ \psi, \quad d_0(\varphi, \psi) < \varepsilon.
+  \]
+\end{itemize}
+\end{Thm}
+
+\begin{Ex}
+If $Y = \{y\}$ and $h(y) = y$, then for small perturbation $f$, we obtain $f(\psi(y)) = \psi(y)$, so $f$ has a fixed point near $\Lambda$.
+\end{Ex}
+
+\subsection{Shadowing Theorem}
+
+\begin{Def}[Pseudo-Orbit]
+A sequence $(x_k) \subset M$ is a $\delta$-pseudo-orbit if
+\[
+d(g(x_k), x_{k+1}) \le \delta \quad \forall k.
+\]
+\end{Def}
+
+\begin{Thm}[Shadowing Theorem]
+Let $\Lambda$ be a hyperbolic set of $g$. Then for any $\varepsilon > 0$ there exists $\delta > 0$ such that any $\delta$-pseudo-orbit $(x_k)$ with $d(x_k, \Lambda) < \delta$ is $\varepsilon$-shadowed by a true orbit $g^k(x)$ with $x \in \Lambda_\varepsilon$.
+\end{Thm}
+
+\subsection{Persistence Under Perturbations}
+
+\begin{Thm}[Persistence of Hyperbolicity]
+Let $\Lambda$ be a hyperbolic set of $g$. Then:
+\begin{itemize}
+  \item[(T1)] For $d_1(f, g) < \varepsilon_1$, every compact invariant set $K \subset U(\Lambda)$ of $f$ is hyperbolic.
+  \item[(T2)] For every $\varepsilon > 0$, there exists $\delta > 0$ such that for $d_1(f, g) < \delta$, there exists a hyperbolic set $K \subset V$ of $f$ and a homeomorphism $\psi: K \to \Lambda$ with
+  \[
+  \psi \circ f|_K = g|_\Lambda \circ \psi, \quad d_0(\psi, \text{Id}) < \varepsilon.
+  \]
+\end{itemize}
+\end{Thm}
+
+\begin{Cor}[Structure of Anosov Diffeomorphisms]
+The set of Anosov diffeomorphisms on a compact manifold $M$ is open in the $C^1$ topology. Moreover, Anosov diffeomorphisms are structurally stable.
+\end{Cor}
+
+\columnbreak
+
+\section{Local Bifurcations}
+\label{sec:local_bifurcations}
+
+\begin{Mot}
+Bifurcation theory studies qualitative changes in the behavior of dynamical systems as parameters vary. When such changes cause a loss of topological equivalence in phase portraits, we encounter bifurcations. These often signal the birth or death of equilibria or periodic orbits and help classify parameter-dependent behaviors.
+\end{Mot}
+
+\subsection{Basic Concepts}
+
+\begin{Def}
+The appearance of a non-equivalent phase portrait under parameter variation is called a \textbf{bifurcation}.
+\end{Def}
+
+\begin{Def}
+Two parametrized ODEs
+\[
+x' = f(x, p), \quad y' = g(y, q),
+\]
+are \emph{fiber topologically equivalent} if:
+\begin{itemize}
+    \item[(D1)] There exists a homeomorphism $\xi: \mathbb{R}^m \to \mathbb{R}^m$ such that $\xi(p) = q$,
+    \item[(D2)] For each $p$, the systems $x' = f(x, p)$ and $y' = g(y, \xi(p))$ are topologically equivalent.
+\end{itemize}
+\end{Def}
+
+\begin{Def}
+A \textbf{bifurcation diagram} is a stratification of the parameter space induced by topological equivalence, together with a representative phase portrait for each stratum.
+\end{Def}
+
+\begin{Def}
+An \textbf{unfolding} is a parametrized family of dynamical systems containing a bifurcation in a persistent way. The minimal number of parameters needed is the \emph{codimension}.
+\end{Def}
+
+\subsection{Fold (Saddle-Node) Bifurcation}
+
+\begin{Ex}
+Consider $x' = p - x^2$. For $p > 0$, two equilibria $x = \pm \sqrt{p}$ exist; for $p < 0$, none. This is a classic \emph{fold bifurcation}. The equilibria collide at $p = 0$ and disappear.
+\end{Ex}
+
+\begin{Thm}[Fold Bifurcation of Flows]
+Let $x' = f(x, p)$ be a one-parameter ODE satisfying:
+\begin{itemize}
+    \item[(A1)] $f(0,0) = 0$, $\partial_x f(0,0) = 0$,
+    \item[(A2)] $\partial_{xx} f(0,0) \neq 0$, $\partial_p f(0,0) \neq 0$,
+\end{itemize}
+Then the system is locally topologically equivalent to $y' = q \pm y^2$.
+\end{Thm}
+
+\begin{Int}
+Condition (A1) implies a zero eigenvalue at the bifurcation point—hyperbolicity is lost. The genericity conditions (A2) ensure a non-degenerate, transverse unfolding.
+\end{Int}
+
+\subsection{Transcritical Bifurcation}
+
+\begin{Ex}
+$x' = x(p - x)$ exhibits a \textbf{transcritical bifurcation}. Fixed points $x = 0$ and $x = p$ exchange stability as $p$ crosses zero.
+\end{Ex}
+
+\subsection{Hopf Bifurcation}
+
+\begin{Thm}[Hopf Bifurcation]
+Let $x' = f(x,p)$ be a smooth $2D$ system where $Df(0,p)$ has eigenvalues $\lambda_{1,2}(p) = \mu(p) \pm i \omega(p)$ with $\mu(0) = 0$, $\omega(0) > 0$. Then the system is locally topologically equivalent to
+\[
+\begin{pmatrix} y_1' \\ y_2' \end{pmatrix}
+=
+\begin{pmatrix} q & -1 \\ 1 & q \end{pmatrix}
+\begin{pmatrix} y_1 \\ y_2 \end{pmatrix}
+\pm (y_1^2 + y_2^2)
+\begin{pmatrix} y_1 \\ y_2 \end{pmatrix}.
+\]
+\end{Thm}
+
+\begin{Int}
+Hopf bifurcations give rise to limit cycles. The sign of the first Lyapunov coefficient $l_1$ determines whether the bifurcation is supercritical ($l_1 < 0$) or subcritical ($l_1 > 0$).
+\end{Int}
+
+\subsection{Bifurcations of Maps}
+
+\begin{Thm}[Fold Bifurcation of Maps]
+Let $x_{k+1} = g(x_k, p)$ be a discrete map with $g(0,0) = 0$ and multiplier $\mu = 1$. Then, under generic conditions $\partial_{xx} g(0,0) \neq 0$, $\partial_p g(0,0) \neq 0$, the map is conjugate to:
+\[
+y \mapsto q + y \pm y^2.
+\]
+\end{Thm}
+
+\begin{Thm}[Flip Bifurcation]
+If $g(0,0) = 0$ and $\mu = -1$, then under non-degeneracy and transversality conditions, the map is conjugate to:
+\[
+y \mapsto -(1 + q) y \pm y^3.
+\]
+\end{Thm}
+
+\begin{Ex}
+For the normal form $y \mapsto -(1 + q) y + y^3$, a period-doubling (flip) bifurcation occurs: as $q$ crosses $0$, a stable period-2 orbit emerges while the fixed point loses stability.
+\end{Ex}
+
+\subsection{Neimark–Sacker Bifurcation}
+
+\begin{Def}
+If a complex conjugate pair of multipliers crosses the unit circle, then a \textbf{Neimark–Sacker} bifurcation occurs. A closed invariant curve may bifurcate from the fixed point.
+\end{Def}
+
+\begin{Ex}
+The Hénon map
+\[
+\begin{pmatrix}
+x_1 \\ x_2
+\end{pmatrix}
+\mapsto
+\begin{pmatrix}
+x_2 \\ p_1 - p_2 x_1 - x_2^2
+\end{pmatrix}
+\]
+exhibits rich bifurcation structure including Neimark–Sacker, flip, and fold bifurcations, depending on the parameter values.
+\end{Ex}
+
+\section{Normal Forms}
+\label{sec:normal_forms}
+
+\begin{Mot}
+Near equilibria, nonlinear systems can often be simplified by coordinate changes that preserve the qualitative behavior. The aim of normal form theory is to simplify the Taylor expansion of a system via near-identity transformations to better understand bifurcations and local dynamics.
+\end{Mot}
+
+\subsection{Polynomial Expansions and Coordinate Changes}
+
+\begin{Def}
+Let $H_k$ denote the space of $d$-component vector-valued homogeneous polynomials of degree $k$.
+\end{Def}
+
+Assume $x = 0$ is an equilibrium, and Taylor-expand the ODE:
+\[
+x' = Ax + f^{(2)}(x) + f^{(3)}(x) + \cdots, \quad A = Df(0),
+\]
+where $f^{(k)} \in H_k$ for $k \ge 2$. Consider a coordinate change
+\[
+x = y + h^{(k)}(y), \quad h^{(k)} \in H_k.
+\]
+The transformed system becomes:
+\[
+y' = Ay + \sum_{j=2}^{k-1} f^{(j)}(y) + \big(f^{(k)}(y) - L h^{(k)}(y)\big) + \mathcal{O}(|y|^{k+1}),
+\]
+where the operator $L: H_k \to H_k$ is defined by
+\[
+Lh := D h \cdot A y - A h(y) = [h, Ay].
+\]
+
+\begin{Def}[Homological Equation]
+The homological equation is:
+\[
+L h^{(k)} = f^{(k)}.
+\]
+We can eliminate non-resonant terms by solving this equation.
+\end{Def}
+
+\begin{Def}[Resonant Terms]
+The terms $r^{(k)} = f^{(k)} - g^{(k)}$ in a complement $R_k$ to $\text{range}(L)$ are called \emph{resonant terms}.
+\end{Def}
+
+\begin{Thm}[Poincaré Normal Form]
+There exists a local near-identity coordinate change
+\[
+x = y + h^{(2)}(y) + h^{(3)}(y) + \cdots + h^{(k)}(y) + \mathcal{O}(|y|^{k+1}), \quad h^{(k)} \in H_k,
+\]
+that transforms the ODE into:
+\[
+y' = Ay + r^{(2)}(y) + r^{(3)}(y) + \cdots + r^{(k)}(y) + \mathcal{O}(|y|^{k+1}), \quad r^{(k)} \in R_k.
+\]
+\end{Thm}
+
+\subsection{Structure of Operator \texorpdfstring{$L$}{L}}
+
+\begin{Rem}
+The operator $L$ can also be interpreted via the Lie bracket:
+\[
+L h = [h, Ax] = D h \cdot Ax - D(Ax) \cdot h.
+\]
+\end{Rem}
+
+\begin{Lem}
+Let $L^*$ denote the adjoint of $L$ with respect to an inner product $\langle \cdot, \cdot \rangle_k$. Then:
+\[
+R_k = \ker L^* = \{ u \in H_k : L^* u = 0 \}.
+\]
+If $L$ has no generalized eigenvectors for the eigenvalue $0$, then:
+\[
+H_k = \ker L \oplus \text{range}(L), \quad R_k = \ker L.
+\]
+\end{Lem}
+
+\subsection{Example: Hopf Bifurcation Normal Form}
+
+\begin{Thm}[Hopf Normal Form]
+For a smooth planar system near a Hopf point (eigenvalues $\pm i\omega$), the Poincaré normal form is:
+\[
+y' =
+\begin{pmatrix}
+0 & -1 \\
+1 & 0
+\end{pmatrix} y +
+(y_1^2 + y_2^2)
+\begin{pmatrix}
+p_1 & -p_2 \\
+p_2 & p_1
+\end{pmatrix} y + \mathcal{O}(|y|^4).
+\]
+\end{Thm}
+
+\begin{Rem}
+This form matches the topological normal form in Chapter 8 at the bifurcation point $q = 0$, but provides correct leading-order terms. Higher-order terms are ignored.
+\end{Rem}
+
+\subsection{Coordinate Calculations in Practice}
+
+We construct $L$ in matrix form, mapping $H_k \to H_k$, using basis monomials:
+- For $k = 2$: use basis $\{x^2, xy, y^2\} \otimes \{\partial_x, \partial_y\}$ in $\mathbb{R}^6$,
+- For $k = 3$: use $\{x^3, x^2y, xy^2, y^3\} \otimes \{\partial_x, \partial_y\}$ in $\mathbb{R}^8$.
+
+The linear map $L$ becomes a matrix $M^{(k)}$, from which:
+- $\ker M^{(k)}$ gives the resonant terms,
+- $\ker (M^{(k)})^\top$ gives orthogonal complements (via adjoint).
+
+\subsection{Bogdanov–Takens Bifurcation}
+
+\begin{Thm}[Bogdanov–Takens Normal Form]
+Any generic two-parameter system with a double-zero eigenvalue is locally topologically equivalent to:
+\[
+\begin{pmatrix}
+y_1' \\
+y_2'
+\end{pmatrix}
+=
+\begin{pmatrix}
+0 \\
+q_1
+\end{pmatrix}
++
+\begin{pmatrix}
+0 & 1 \\
+q_2 & 0
+\end{pmatrix}
+\begin{pmatrix}
+y_1 \\
+y_2
+\end{pmatrix}
++
+\begin{pmatrix}
+0 \\
+y_1^2 \pm y_1 y_2
+\end{pmatrix}.
+\]
+\end{Thm}
+
+\begin{Note}
+This form arises from applying normal form transformations to a system with linearization matrix $\begin{pmatrix} 0 & 1 \\ 0 & 0 \end{pmatrix}$ and then computing the lowest-order resonant terms. Higher-order terms are neglected for local analysis.
+\end{Note}
+
+\columnbreak
+
+\section{Center Manifolds}
+\label{sec:center_manifolds}
+
+\begin{Mot}
+Center manifolds help reduce the dimensionality of a dynamical system when eigenvalues with zero real part occur. These manifolds capture the essential dynamics near non-hyperbolic equilibria and are key to applying bifurcation theory and normal forms.
+\end{Mot}
+
+\subsection{Definitions and Theorems}
+
+Consider a smooth ODE:
+\[
+x' = Ax + f^{(2)}(x) + f^{(3)}(x) + \dots = f(x), \quad x \in \mathbb{R}^d, \quad f \in C^k,
+\]
+where $x^* = 0$ is an equilibrium and $A = Df(0)$. Suppose the spectrum of $A$ splits as:
+\begin{itemize}
+    \item $d_c$ eigenvalues with $\Re(\lambda_c) = 0$,
+    \item $d_s$ eigenvalues with $\Re(\lambda_s) < 0$,
+    \item $d_u$ eigenvalues with $\Re(\lambda_u) > 0$.
+\end{itemize}
+
+\begin{Def}
+Let $E^c(0)$ be the span of eigenvectors corresponding to $\Re(\lambda_j) = 0$. The \textbf{center manifold} is a locally invariant $C^k$ manifold tangent to $E^c(0)$.
+\end{Def}
+
+\begin{Thm}[Center Manifold Theorem]
+Let $x' = f(x)$ be a $C^k$-smooth vector field. Then there exists a local $C^k$-smooth $d_c$-dimensional invariant manifold $W^c_{\text{loc}}(0)$ tangent to $E^c(0)$ such that any solution staying near $0$ as $t \to \pm \infty$ lies on $W^c_{\text{loc}}(0)$.
+\end{Thm}
+
+\begin{Def}
+The manifold $W^c_{\text{loc}}(0)$ is called the \textbf{local center manifold} of the system at the origin.
+\end{Def}
+
+\begin{Rem}
+Center manifolds are in general:
+\begin{itemize}
+    \item Not unique,
+    \item Not analytic even if the vector field is analytic,
+    \item Possibly not $C^\infty$.
+\end{itemize}
+\end{Rem}
+
+\begin{Ex}
+Consider $x' = x^2$, $y' = -y$. Then $(0,0)$ is an equilibrium. The general solution is:
+\[
+x(t) = \frac{1}{\frac{1}{x_0} - t}, \quad y(t) = y_0 e^{-t}.
+\]
+A one-parameter family of center manifolds is $y = h_p(x) = p e^{1/x}$ for $x < 0$, $0$ for $x \ge 0$. Each of these is invariant and tangent to $E^c(0)$.
+\end{Ex}
+
+\subsection{Center Manifold Reduction}
+
+We write the system in block form:
+\[
+\begin{aligned}
+x' &= Bx + F(x,y), \quad F = \mathcal{O}(x^2, xy, y^2), \\
+y' &= Cy + G(x,y), \quad G = \mathcal{O}(x^2, xy, y^2),
+\end{aligned}
+\]
+where $x \in \mathbb{R}^{d_c}$ and $y \in \mathbb{R}^{d_s + d_u}$.
+
+\begin{Thm}[Center Manifold Reduction]
+The system is locally topologically equivalent near $0$ to:
+\[
+\begin{aligned}
+x' &= Bx + F(x, H(x)), \\
+y' &= Cy,
+\end{aligned}
+\]
+where $W^c_{\text{loc}}(0) = \{ (x, y) : y = H(x) \}$ with $H = \mathcal{O}(x^2)$.
+\end{Thm}
+
+\subsection{Invariance Equation}
+
+\begin{Def}
+The \textbf{invariance equation} for the center manifold $y = h(x)$ is:
+\[
+\mathcal{N}(h(x)) = Dh(x)[Bx + F(x, h(x))] - C h(x) - G(x, h(x)) = 0.
+\]
+\end{Def}
+
+\begin{Thm}[Approximation Theorem]
+If $h$ satisfies $h(0) = 0$, $Dh(0) = 0$, and
+\[
+\mathcal{N}(h(x)) = \mathcal{O}(|x|^p),
+\]
+then the true center manifold $H(x)$ satisfies $H(x) = h(x) + \mathcal{O}(|x|^p)$.
+\end{Thm}
+
+\begin{PrS}
+One constructs $H$ using a fixed-point operator $K$ over Lipschitz maps. An approximate solution $h$ can be embedded into a correction map $w$ such that $w^* = K(w^* + h) - h$ converges to zero.
+\end{PrS}
+
+\subsection{Examples}
+
+\begin{Ex}
+\label{ex:center_poly}
+Consider:
+\[
+x' = x y, \quad y' = -y + p x^2.
+\]
+An ansatz $y = h(x) = a_2 x^2 + a_3 x^3$ yields:
+\[
+\mathcal{N}(h(x)) = (a_2 - p) x^2 + a_3 x^3 + \dots
+\]
+Choose $a_2 = p$, $a_3 = 0$, so:
+\[
+W^c_{\text{loc}}(0) = \{ (x,y) : y = p x^2 + \mathcal{O}(x^4) \}, \quad x' = p x^3 + \mathcal{O}(x^5).
+\]
+\end{Ex}
+
+\begin{Ex}
+\label{ex:center_shifted}
+Consider:
+\[
+x' = y - 1, \quad y' = -(y - 1) + p x^2 + x(y - 1).
+\]
+Translate $(x, y) \mapsto (x, \tilde{y} = y - 1)$:
+\[
+x' = \tilde{y}, \quad \tilde{y}' = -\tilde{y} + p x^2 + x \tilde{y}.
+\]
+Linearize and diagonalize to find center and stable eigenspaces. Proceed as in the previous example to approximate the center manifold.
+\end{Ex}
+
+\section{Higher Codimension}
+\label{sec:higher_codimension}
+
+\begin{Mot}
+Some bifurcations, like the Bogdanov-Takens bifurcation, require more than one parameter to unfold. This leads to higher codimension bifurcations where richer dynamics arise, including combinations of local bifurcations (fold, Hopf, homoclinic).
+\end{Mot}
+
+\subsection{Jet Spaces and Determinacy}
+
+\begin{Def}[Jet]
+Let $F \in C^l(\mathbb{R}^d, \mathbb{R}^d)$ with $F(0) = 0$ and $k \le l$. The $k$-jet $J^kF(y)$ is the Taylor polynomial of $F$ up to and including order $k$.
+\end{Def}
+
+We ask whether the 2-jet of a vector field determines its topological type near a fixed point.
+
+\begin{Ex}
+Consider $F = (y_1^2 - 2y_1y_2, y_2^2 - 2y_1y_2)^T$. Using polar coordinates and the blow-up map $\Phi(\theta, r) = (r \cos \theta, r \sin \theta)$, we compute the desingularized vector field. After normalizing via $\bar{F} = \frac{1}{r} \hat{F}$, we observe that the origin blows up into a circle of six hyperbolic equilibria. By the Hartman-Grobman Theorem, the dynamics are determined by the 2-jet.
+\end{Ex}
+
+\begin{Def}[Geometric Blow-up]
+A blow-up of $F \in \mathbb{R}^d$ is a map $\Phi: S^{d-1} \times [0,\infty) \to \mathbb{R}^d$ with desingularized vector field:
+\[
+\bar{F}(\theta, r) = \frac{1}{r^l}(D\Phi^{-1} \circ F \circ \Phi)(\theta, r),
+\]
+for some $l \in \mathbb{N}$.
+\end{Def}
+
+\begin{Thm}
+The 2-jet in the normal form
+\[
+y_1' = y_2, \quad y_2' = y_1^2 \pm y_1 y_2
+\]
+is topologically determinate.
+\end{Thm}
+
+\subsection{Bogdanov-Takens Normal Form}
+
+We analyze:
+\[
+y_1' = y_2, \quad y_2' = q_1 + q_2 y_1 + y_1^2 - y_1 y_2.
+\]
+
+\begin{Prop}
+There exist bifurcation curves:
+\begin{itemize}
+    \item Fold: $F = \{(q_1, q_2) \in \mathbb{R}^2 : 4q_1 - q_2^2 = 0\}$,
+    \item Hopf: $H = \{(q_1, q_2) \in \mathbb{R}^2 : q_1 = 0, q_2 < 0\}$.
+\end{itemize}
+\end{Prop}
+
+\begin{PrI}
+To analyze destruction of the periodic orbit between $H$ and $F$, we rescale:
+\[
+Y_1 = \nu^{-1} y_1, \quad Y_2 = \nu^{-3/2} y_2, \quad t = \nu^{-1/2} T,
+\]
+and simplify to a Hamiltonian system:
+\[
+Y_1' = Y_2, \quad Y_2' = Y_1(Y_1 - 1), \quad H(Y) = \frac{1}{2} Y_2^2 - \frac{1}{2} Y_1^2 + \frac{1}{3} Y_1^3.
+\]
+This exhibits a homoclinic orbit and connects back to the need to study global bifurcations.
+\end{PrI}
+
+\columnbreak
+
+\section{Global Bifurcations}
+\label{sec:global_bifurcations}
+
+\begin{Mot}
+While local bifurcations occur near equilibria, global bifurcations involve entire trajectories such as homoclinic or heteroclinic orbits. These phenomena often mark transitions between simple and chaotic behavior and are essential in understanding nonlinear dynamics.
+\end{Mot}
+
+\subsection{Homoclinic and Heteroclinic Orbits}
+
+\begin{Def}
+Let $(X, T, \varphi_t)$ be a dynamical system with equilibria $x^* \neq y^*$.
+
+\begin{itemize}
+    \item A trajectory $\gamma(t)$ is a \textbf{heteroclinic orbit} from $x^*$ to $y^*$ if:
+    \[
+    \lim_{t \to -\infty} \gamma(t) = x^*, \quad \lim_{t \to \infty} \gamma(t) = y^*.
+    \]
+    \item A trajectory $\gamma(t)$ is a \textbf{homoclinic orbit} to $x^*$ if:
+    \[
+    \lim_{t \to \pm\infty} \gamma(t) = x^*.
+    \]
+\end{itemize}
+\end{Def}
+
+\begin{Rem}
+Homoclinic and heteroclinic orbits are structurally unstable in $\mathbb{R}^2$ (Peixoto’s Theorem), but can be stable in $\mathbb{R}^3$.
+\end{Rem}
+
+\subsection{Split Function and Local Analysis}
+
+\begin{Def}[Split Function]
+Given a homoclinic orbit at $p=0$ for a system $x' = f(x, p)$, define cross-section $\Sigma$ near the saddle point $x^* = 0$ with
+\[
+\Sigma^u := W^u(0) \cap \Sigma, \quad \Sigma^s := W^s(0) \cap \Sigma.
+\]
+Using a local coordinate $q$ on $\Sigma$, the \textbf{split function} $\xi(p)$ measures the signed distance between $\Sigma^u$ and $\Sigma^s$:
+\[
+\xi(p) := q(\Sigma^u \cap \Sigma), \quad \xi(0) = 0.
+\]
+\end{Def}
+
+\begin{Rem}
+The split function is independent of the orientation of $q$. It measures a bifurcation distance and is a type of Melnikov function in applications.
+\end{Rem}
+
+\subsection{Andronov-Leontovich Theorem}
+
+\begin{Thm}[Andronov-Leontovich]
+Let $x' = f(x, p)$ in $\mathbb{R}^2$ with a homoclinic orbit to a hyperbolic saddle $x^*=0$ at $p=0$, and eigenvalues $\lambda_1(0)<0<\lambda_2(0)$. Assume:
+
+\begin{enumerate}[label=(A\arabic*)]
+    \item (Non-resonance) $\sigma(0) := \lambda_1(0) + \lambda_2(0) \neq 0$,
+    \item (Breaking) $\xi'(0) \neq 0$.
+\end{enumerate}
+
+Then there exists a unique limit cycle $\Gamma_p$ bifurcating from the homoclinic loop. If $\sigma(0) < 0$, the cycle is stable; if $\sigma(0) > 0$, it is unstable.
+\end{Thm}
+
+\begin{Def}
+The value $\sigma(p) = \lambda_1(p) + \lambda_2(p)$ is called the \textbf{saddle quantity}.
+\end{Def}
+
+\begin{Int}
+This result explains the bifurcation curve of limit cycles in the Bogdanov-Takens scenario, though calculating it precisely is challenging.
+\end{Int}
+
+\subsection{Shilnikov Homoclinic Bifurcation}
+
+\begin{Thm}[Shilnikov Homoclinic Orbit]
+Let $x' = f(x, p)$ in $\mathbb{R}^3$ with a homoclinic orbit to a saddle-focus $x^*=0$ having eigenvalues $\lambda_1>0$, $\lambda_{2,3} = \alpha \pm i\omega$ with $\alpha < 0$. Assume:
+
+\begin{enumerate}[label=(A\arabic*)]
+    \item (Shilnikov condition) $\sigma := \lambda_1 + \alpha > 0$,
+    \item (Non-resonance) $\lambda_2 \neq \lambda_3$.
+\end{enumerate}
+
+Then for all sufficiently small $|p|$, there exist infinitely many saddle-type periodic orbits accumulating onto the homoclinic orbit.
+\end{Thm}
+
+\begin{Int}
+The geometry of the Poincaré map around the saddle-focus forms a spiral return, which intersects transversally with itself—yielding infinitely many loops. This provides the groundwork for chaotic behavior and connects to the Smale horseshoe.
+\end{Int}
+
+\subsection{Example: FitzHugh–Nagumo PDE}
+
+\begin{Ex}
+Consider the traveling wave ansatz $u(x,t)=u(x-ct)$ for the PDE:
+\[
+\partial_t u = \partial_{xx}u + f(u) - v, \quad \partial_t v = \varepsilon (u - v),
+\]
+where $f(u) = u(1-u)(u - p)$. In moving frame $s = x - ct$, we get the ODE system:
+\[
+\begin{aligned}
+u' &= w, \\
+w' &= v - cw - f(u), \\
+v' &= \frac{\varepsilon}{c} (u - v).
+\end{aligned}
+\]
+
+For $\varepsilon = 0$, the reduced planar system can admit homoclinic loops. For small $\varepsilon > 0$, the system perturbs to satisfy Shilnikov’s conditions, implying the existence of complex homoclinic structures.
+\end{Ex}
+
+\columnbreak
+
+\section{The Smale Horseshoe}
+\label{sec:smale_horseshoe}
+
+\begin{Mot}
+The horseshoe map captures the essential mechanisms behind deterministic chaos: sensitive dependence on initial conditions, dense orbits, and a rich set of periodic and aperiodic solutions. It is also instrumental in the proof of Shilnikov’s theorem and global bifurcation theory.
+\end{Mot}
+
+\subsection{Standard Horseshoe Construction}
+
+\begin{Def}
+Let $Y = [0,1]^2$ be the unit square. The \textbf{Smale horseshoe map} $g: Y \to \mathbb{R}^2$ consists of:
+\begin{enumerate}
+    \item Vertical stretching by a factor $\mu > 2$,
+    \item Horizontal compression by a factor $\lambda \in (0, 1/2)$,
+    \item Folding the image into a horseshoe shape,
+    \item Pasting the resulting image back into $Y$ such that $g(Y) \cap Y$ consists of two vertical strips $V_0$, $V_1$.
+\end{enumerate}
+The pre-image $g^{-1}(g(Y) \cap Y)$ consists of two horizontal strips $H_0$, $H_1$. Iteration of $g$ defines a set:
+\[
+X := \{x_0 \in Y : g^k(x_0) \in Y \ \text{for all } k \in \mathbb{Z}\}.
+\]
+\end{Def}
+
+\begin{Rem}
+The Jacobian $Dg$ on each $H_i$ is constant:
+\[
+Dg = \begin{pmatrix}
+\pm \lambda & 0 \\
+0 & \pm \mu
+\end{pmatrix}.
+\]
+The sign depends on the strip (e.g., $+$ on $H_0$, $-$ on $H_1$).
+\end{Rem}
+
+\subsection{Symbolic Dynamics and Conjugacy}
+
+\begin{Def}
+Let $\Sigma_2$ be the space of bi-infinite binary sequences $\{a_j\}_{j \in \mathbb{Z}}$ with $a_j \in \{0,1\}$, and let the shift map $\sigma : \Sigma_2 \to \Sigma_2$ be defined by $(\sigma(a))_j = a_{j+1}$.
+\end{Def}
+
+\begin{Thm}[Horseshoe Symbolic Dynamics]
+The map $g: X \to X$ is topologically conjugate to the shift map $\sigma: \Sigma_2 \to \Sigma_2$.
+\end{Thm}
+
+\begin{proof}
+Define $\varphi(x) = \{a_j\}_{j \in \mathbb{Z}}$ with $g^j(x) \in H_{a_j}$. Then:
+\[
+\varphi(g(x)) = \sigma(\varphi(x)).
+\]
+Each rectangle $R(b)$ associated with finite blocks $b_{-m}\dots b_n$ corresponds to a horizontal-vertical strip intersection of decreasing size as $m,n \to \infty$, ensuring injectivity and surjectivity of $\varphi$.
+\end{proof}
+
+\begin{Cor}
+\label{cor:horseshoe_properties}
+The horseshoe map $g: X \to X$ satisfies:
+\begin{itemize}
+    \item[(T1)] $X$ contains countably many saddle-type periodic orbits,
+    \item[(T2)] $X$ contains uncountably many aperiodic orbits,
+    \item[(T3)] $X$ contains a dense orbit,
+    \item[(T4)] $X$ is a hyperbolic set.
+\end{itemize}
+\end{Cor}
+
+\subsection{Generalized Horseshoe}
+
+\begin{Def}[Vertical/Horizontal Curve]
+A vertical curve is $x = v(y)$ with $|v(y_1) - v(y_2)| \le \rho |y_1 - y_2|$ for $\rho \in (0,1)$. Similarly, horizontal curves are $y = h(x)$ with Lipschitz constant $\rho$.
+\end{Def}
+
+\begin{Def}[Generalized Horseshoe Map]
+Let $g \in C^1(Y, \mathbb{R}^2)$ with horizontal strips $H_i$, vertical strips $V_i$ for $i \in \{0,\dots,N-1\}$. Suppose $g(H_i) = V_i$, and:
+\begin{itemize}
+    \item[(A1)] $Dg(K^u) \subset K^u$, $Dg^{-1}(K^s) \subset K^s$,
+    \item[(A2)] Expansion/contraction: $|(Dg(x))_2| \ge \frac{1}{\mu} |y|$ and similar for the inverse,
+    \item $|\det Dg|, |\det Dg^{-1}| \le \frac{1}{2\mu^2}$.
+\end{itemize}
+Then $g$ admits a symbolic conjugacy to the shift map on $N$ symbols.
+\end{Def}
+
+\subsection{Smale-Birkhoff Homoclinic Theorem}
+
+\begin{Thm}[Smale-Birkhoff]
+Let $g: \mathbb{R}^d \to \mathbb{R}^d$ be a diffeomorphism with a hyperbolic saddle at $0$ and a transverse homoclinic point $q \in W^s(0) \cap W^u(0)$. Then $g^\kappa$ contains an invariant set $X$ on which it is topologically conjugate to a Smale horseshoe.
+\end{Thm}
+
+\begin{Note}
+Transverse homoclinic points cannot occur in flows, but do appear in Poincaré maps.
+\end{Note}
+
+\subsection{The \texorpdfstring{$\lambda$}{Lambda}-Lemma (Inclination Lemma)}
+
+\begin{Lem}[$\lambda$-Lemma]
+Let $0$ be a hyperbolic fixed point of a diffeomorphism $g$ with $\dim(W^u(0)) = k$, $\dim(W^s(0)) = l$. Let $M$ be a $k$-dimensional $C^1$ submanifold intersecting $W^s(0)$ transversely. Then for all $r,\delta > 0$ there exists $n_0$ such that for all $n \ge n_0$:
+\[
+d_1(B(x,r) \cap W^u(0), g^n(D)) < \delta,
+\]
+i.e., iterates of $D$ (a $k$-disk in $M$) become arbitrarily $C^1$-close to $W^u(0)$.
+\end{Lem}
+
+\begin{Int}
+The lemma states that manifolds “inclined” toward the stable manifold become increasingly aligned with the unstable manifold under forward iteration, a key geometric mechanism in forming horseshoe maps.
+\end{Int}
+
+\columnbreak
+
+\subsection{Geometric Construction}
+
+\begin{Int}
+In $R^2$, construct a rectangle $R$ near a transverse homoclinic point $q$ avoiding $W^s(0)$. Using the $\lambda$-Lemma, forward images $g^n(R)$ and backward images $g^{-n}(R)$ become vertical and horizontal strips respectively. The horseshoe geometry emerges naturally, enabling the conjugacy to symbolic dynamics.
+\end{Int}
+
+\section{Melnikov’s Method}
+\label{sec:melnikov}
+
+\begin{Mot}
+The Smale-Birkhoff Theorem provides a topological criterion for chaotic dynamics via transverse homoclinic points. However, proving the existence of such intersections analytically is notoriously hard. Melnikov's method offers a perturbative tool to detect them in systems close to Hamiltonian structure.
+\end{Mot}
+
+\subsection{Perturbed Hamiltonian Systems}
+
+Consider the periodically perturbed Hamiltonian system:
+\[
+x' = f(x) + \varepsilon g(x, t), \quad x \in \mathbb{R}^2,
+\]
+where $f = (\partial_{x_2} H, -\partial_{x_1} H)^T$ is Hamiltonian and $g$ is $T$-periodic in $t$. Assume that the unperturbed system $(\varepsilon = 0)$ has a homoclinic orbit $\gamma(t)$ to a hyperbolic saddle $p$, i.e.,
+\[
+\lim_{t \to \pm \infty} \gamma(t) = p, \quad Df(p) \text{ has eigenvalues } \lambda_1 < 0 < \lambda_2.
+\]
+
+To analyze the dynamics, we consider the autonomous system:
+\[
+\begin{aligned}
+x' &= f(x) + \varepsilon g(x, t), \\
+t' &= 1,
+\end{aligned}
+\]
+on $\mathbb{R}^2 \times S^1$ and define the Poincaré map $P_\varepsilon^{t_0} : \Sigma_{t_0} \to \Sigma_{t_0}$, where $\Sigma_{t_0} = \{(x,t) \mid t = t_0\}$.
+
+\subsection{Persistence of the Hyperbolic Point}
+
+\begin{Lem}
+For $\varepsilon > 0$ sufficiently small, the Poincaré map $P_\varepsilon^{t_0}$ has a hyperbolic fixed point $p_\varepsilon^{t_0} = p + \mathcal{O}(\varepsilon)$.
+\end{Lem}
+
+\subsection{Local Approximations of Stable and Unstable Orbits}
+
+\begin{Lem}
+The stable and unstable manifolds $W^s_{\text{loc}}(\Gamma_\varepsilon)$ and $W^u_{\text{loc}}(\Gamma_\varepsilon)$ of the periodic orbit $\Gamma_\varepsilon(t) = p + \mathcal{O}(\varepsilon)$ are $C^k$-close to the unperturbed manifolds. Trajectories satisfy:
+\[
+\begin{aligned}
+\gamma_\varepsilon^s(t; t_0) &= \gamma(t - t_0) + \varepsilon \gamma_1^s(t; t_0) + \mathcal{O}(\varepsilon^2), \quad t \in [t_0, \infty), \\
+\gamma_\varepsilon^u(t; t_0) &= \gamma(t - t_0) + \varepsilon \gamma_1^u(t; t_0) + \mathcal{O}(\varepsilon^2), \quad t \in (-\infty, t_0].
+\end{aligned}
+\]
+\end{Lem}
+
+\subsection{Signed Distance Function}
+
+Let $L$ be a transversal section to $\gamma(t)$ at $\gamma(0)$ with normal vector $(-f_2(\gamma(0)), f_1(\gamma(0)))^T$. Define the signed distance:
+\[
+d(t_0) := \gamma_\varepsilon^u(t_0) - \gamma_\varepsilon^s(t_0).
+\]
+
+\begin{Lem}
+\label{lem:distance}
+\[
+d(t_0) = \varepsilon \frac{f(\gamma(0)) \wedge (\gamma_1^u(t_0) - \gamma_1^s(t_0))}{|f(\gamma(0))|} + \mathcal{O}(\varepsilon^2),
+\]
+where $a \wedge b := a_1 b_2 - a_2 b_1$ is the wedge product.
+\end{Lem}
+
+\subsection{Melnikov Function and Criterion}
+
+\begin{Def}[Melnikov Function]
+\[
+M(t_0) := \int_{-\infty}^\infty f(\gamma(t - t_0)) \wedge g(\gamma(t - t_0), t) \, dt.
+\]
+\end{Def}
+
+\begin{Thm}[Melnikov Zeros for Homoclinic Orbits]
+If $M(t_0)$ is independent of $\varepsilon$ and has a simple zero, then the manifolds $W^s(p_\varepsilon^{t_0})$ and $W^u(p_\varepsilon^{t_0})$ intersect transversely. If $M(t_0)$ has no zeros, there are no such intersections.
+\end{Thm}
+
+\begin{Int}
+The Melnikov function captures the leading-order displacement between stable and unstable manifolds in a perturbed Hamiltonian system. Simple zeros indicate transverse homoclinic intersections, allowing the application of Smale-Birkhoff.
+\end{Int}
+
+\subsection{Example: Periodically Forced Duffing Equation}
+
+\begin{Ex}
+Consider:
+\[
+\begin{aligned}
+x' &= y, \\
+y' &= x - x^3 + \varepsilon (\alpha \cos t - y),
+\end{aligned}
+\]
+with Hamiltonian $H(x, y) = \frac{1}{2} y^2 - \frac{1}{2} x^2 + \frac{1}{4} x^4$.
+
+The unperturbed system has a double homoclinic loop to the saddle at $(0,0)$ with:
+\[
+\gamma_+(t) = \left( \sqrt{2} \,\text{sech}(t), -\sqrt{2} \,\text{sech}(t)\tanh(t) \right), \quad \gamma_-(t) = -\gamma_+(t).
+\]
+
+We compute the Melnikov function:
+\[
+M(t_0) = \int_{-\infty}^{\infty} \gamma_y^+(t) \left[\alpha \cos(t + t_0) - \gamma_y^+(t) \right] dt.
+\]
+
+Evaluating the integral gives:
+\[
+M(t_0) = -\frac{4}{3} + \sqrt{2} \alpha \pi \, \text{sech}\left(\frac{\pi}{2}\right) \sin(t_0).
+\]
+
+Hence, for suitable $\alpha > 0$, $M(t_0)$ has simple zeros $\Rightarrow$ transverse homoclinic point exists $\Rightarrow$ horseshoe dynamics in the return map.
+\end{Ex}
+
+\section{Chaos}
+\label{sec:chaos}
+
+\begin{Mot}
+Chaotic systems exhibit sensitive dependence on initial conditions, dense orbits, and rich periodic/aperiodic structures. Although we have seen examples like the Smale horseshoe and Duffing equation, we now formalize what chaos means in discrete systems.
+\end{Mot}
+
+\subsection{Sensitive Dependence on Initial Conditions}
+
+\begin{Def}
+A dynamical system $(X, T, \varphi_t)$ has \textbf{sensitive dependence on initial conditions} at $x_0$ if there exists $r > 0$ such that for every $\delta > 0$ there exists $y_0$ with $|x_0 - y_0| < \delta$ and a time $T > 0$ such that
+\[
+|\varphi_T(x_0) - \varphi_T(y_0)| \ge r.
+\]
+\end{Def}
+
+\begin{Ex}
+The \textbf{doubling map} $g(x) = 2x \mod 1$ on $[0, 1]$ exhibits sensitive dependence on initial conditions.
+\end{Ex}
+
+\begin{Thm}
+The doubling map $g(x) = 2x \mod 1$ has sensitive dependence on $[0, 1]$.
+\end{Thm}
+
+\begin{proof}
+We show $g$ is expansive: for $x_0 \neq y_0$, there exists $k$ with
+\[
+|g^k(x_0) - g^k(y_0)| \ge \tfrac{1}{4}.
+\]
+By the doubling map properties, distances double in each iteration unless remapped via mod 1. A contradiction argument using bounds shows the desired result.
+\end{proof}
+
+\subsection{Topological Transitivity}
+
+\begin{Def}
+A system is \textbf{topologically transitive} if there exists $x \in X$ such that its forward orbit is dense in $X$.
+\end{Def}
+
+\begin{Thm}
+The tent map
+\[
+g(x; p) = \begin{cases}
+px, & x \in [0, 1/2), \\
+p(1 - x), & x \in [1/2, 1],
+\end{cases}
+\quad p \in (1, 2]
+\]
+is topologically transitive for $p = 2$.
+\end{Thm}
+
+\begin{proof}
+Via symbolic dynamics: define $h: [0, 1] \to \Sigma_2^+$ by
+\[
+h(x)_j = \begin{cases}
+0, & g^j(x) \in [0, 1/2], \\
+1, & g^j(x) \in [1/2, 1].
+\end{cases}
+\]
+Let $s^*$ be a concatenation of all finite binary words, define $x^* = H(s^*)$. Then the orbit of $x^*$ intersects all symbolic cylinders, implying density.
+\end{proof}
+
+\begin{Rem}
+The coding map $H$ acts like binary expansion:
+\[
+H(s) = \sum_{j=0}^\infty \frac{s_j}{2^{j+1}},
+\]
+which is not injective (e.g., $0.1 = 0.01111\dots$), hence only a semi-conjugacy.
+\end{Rem}
+
+\subsection{Defining Chaos}
+
+\begin{Def}
+An invariant set $S \subset X$ is \textbf{chaotic} if:
+\begin{itemize}
+    \item $\varphi_t|_S$ has sensitive dependence on initial conditions,
+    \item $\varphi_t|_S$ is topologically transitive.
+\end{itemize}
+\end{Def}
+
+\begin{Thm}[Chaos in Interval Maps]
+The following maps are chaotic on $[0, 1]$:
+\begin{itemize}
+    \item Doubling map $x \mapsto 2x \mod 1$,
+    \item Tent map with $p = 2$,
+    \item Logistic map $x \mapsto 4x(1 - x)$.
+\end{itemize}
+\end{Thm}
+
+\begin{Thm}[Chaotic Horseshoe]
+The Smale horseshoe map is chaotic on its invariant set $X \subset [0, 1]^2$.
+\end{Thm}
+
+\subsection{Lyapunov Exponents}
+
+\begin{Def}[Lyapunov Exponents]
+Let $g: \mathbb{R}^d \to \mathbb{R}^d$ be $C^2$, and define:
+\[
+A_k := Dg^k_{x_0} = Dg_{x_{k-1}} \cdots Dg_{x_0}.
+\]
+Let the singular values of $A_k$ be $\lambda_j^{(k)}$, $j = 1, \dots, d$. Then the $j$-th Lyapunov exponent is
+\[
+l_j(x_0) = \lim_{k \to \infty} \frac{1}{k} \ln \lambda_j^{(k)},
+\]
+if the limit exists.
+\end{Def}
+
+\begin{Thm}[Liouville Formula]
+Suppose $| \det Dg_x |$ is constant. Then
+\[
+\sum_{j=1}^d l_j(x_0) = \ln |\det Dg_{x_0}|.
+\]
+\end{Thm}
+
+\begin{proof}
+Use:
+\[
+\det(A_k)^2 = \prod_{j=1}^d (\lambda_j^{(k)})^2 = |\det Dg_{x_0}|^{2k},
+\]
+and apply logs and limits to both sides.
+\end{proof}
+
+\begin{Ex}[Smale Horseshoe]
+$Dg$ constant: $\lambda \in (0, 1/2)$, $\mu > 2$ gives:
+\[
+l_1 = \ln \mu > 0, \quad l_2 = \ln \lambda < 0.
+\]
+\end{Ex}
+
+\begin{Ex}[Tent Map]
+For $x \ne 1/2$, tent map $g(x;2)$ gives $l_1(x) = \ln(2) > 0$.
+\end{Ex}
+
+\begin{Rem}
+A positive Lyapunov exponent is a strong indicator of chaos. For ODEs, a suitable adaptation of Lyapunov exponent definitions leads to similar conclusions.
+\end{Rem}
+
+\section{One-Dimensional Maps}
+\label{sec:one_dim_maps}
+
+\begin{Mot}
+The tent map, logistic map, and doubling map are canonical examples in the study of chaotic dynamics. One-dimensional maps allow us to understand orbit structure and bifurcations through symbolic dynamics and classical results such as Li-Yorke and Sharkovskii theorems.
+\end{Mot}
+
+\subsection{Period Three Implies Chaos}
+
+\begin{Thm}[Li-Yorke Theorem]
+Suppose $g: [a, b] \to \mathbb{R}$ is continuous and has a periodic orbit of minimal period three. Then $g$ has periodic orbits of all periods.
+\end{Thm}
+
+\begin{Rem}
+This result marks the onset of chaos. It implies the existence of a complex structure of periodic points without providing their explicit form.
+\end{Rem}
+
+\subsection{Sharkovskii’s Theorem and Ordering}
+
+\begin{Def}[Sharkovskii Ordering]
+Define a total order $\triangleleft$ on $\mathbb{N}$:
+\[
+1 \triangleleft 2 \triangleleft 4 \triangleleft 8 \triangleleft \cdots \triangleleft 2^n \triangleleft \cdots
+\triangleleft 3 \cdot 2^n \triangleleft 5 \cdot 2^n \triangleleft \cdots \triangleleft 3 \triangleleft 5 \triangleleft \cdots
+\]
+\end{Def}
+
+\begin{Thm}[Sharkovskii's Theorem]
+Let $g: [a, b] \to \mathbb{R}$ be continuous and have a periodic point of minimal period $n$. Then $g$ also has periodic orbits of every period $k$ with $k \triangleleft n$.
+\end{Thm}
+
+\subsection{Tent Map and Logistic Map}
+
+\begin{Ex}
+Define the tent map as:
+\[
+x_{k+1} = g(x_k; p) = p \min\{x_k, 1 - x_k\}, \quad p \in (0, 2].
+\]
+For $p = 2$, we find a period three orbit:
+\[
+g(2/7) = 4/7, \quad g(4/7) = 6/7, \quad g(6/7) = 2/7.
+\]
+Thus, Li-Yorke and Sharkovskii theorems apply, guaranteeing chaotic dynamics.
+\end{Ex}
+
+\begin{Prop}
+The tent map $g(x) = 2\min\{x, 1 - x\}$ and the logistic map $f(y) = 4y(1 - y)$ are topologically conjugate.
+\end{Prop}
+
+\begin{proof}
+Define the conjugacy $h(x) = \frac{1 - \cos(\pi x)}{2}$, a diffeomorphism on $[0,1]$. Then:
+\[
+f(h(x)) = 4h(x)(1 - h(x)) = \sin^2(\pi x) = h(g(x)),
+\]
+showing $f \circ h = h \circ g$.
+\end{proof}
+
+\subsection{Schwarzian Derivative and Stability}
+
+\begin{Def}[Schwarzian Derivative]
+Let $g \in C^3(I, \mathbb{R})$. The Schwarzian derivative is:
+\[
+Sg(x) := \frac{g'''(x)}{g'(x)} - \frac{3}{2} \left( \frac{g''(x)}{g'(x)} \right)^2.
+\]
+At a critical point $x$, define $Sg(x) := \lim_{y \to x} Sg(y)$.
+\end{Def}
+
+\begin{Lem}[Minimum Principle]
+Let $g \in C^3(I, I)$ with $g'(x) \ne 0$ for all $x \in I$. If $Sg(x) < 0$ for all $x \in I$, then $|g'(x)|$ cannot attain a local minimum in the interior of $I$.
+\end{Lem}
+
+\subsection{Singer’s Theorem}
+
+\begin{Thm}[Singer’s Theorem]
+Let $I \subset \mathbb{R}$ be closed and $g \in C^3(I, I)$ with $Sg < 0$. If $g$ has $n$ critical points, then it has at most $n+2$ locally asymptotically stable periodic orbits.
+\end{Thm}
+
+\begin{proof}[Idea]
+If there are too many attracting periodic orbits, their basins must overlap. Using the minimum principle, we find a contradiction if the count exceeds $n + 2$, based on the presence of critical points or boundary behavior.
+\end{proof}
+
+\begin{Ex}
+Consider $g(x) = px(1 - x)$ (logistic map). Then:
+\[
+Sg(x) = -\frac{6}{(1 - 2x)^2}, \quad Sg(1/2) = -\infty.
+\]
+There is one critical point, so at most 3 stable periodic orbits can exist.
+\end{Ex}
+
+\begin{Int}
+Singer’s theorem ties together the geometry of maps (via Schwarzian derivatives) and their dynamical complexity by counting attracting orbits.
+\end{Int}
+
+\columnbreak
+
+\section{Renormalization}
+\label{sec:renormalization}
+
+\begin{Mot}
+Renormalization reveals self-similarity and universal scaling behavior in nonlinear systems, particularly near the onset of chaos. It helps explain sequences of bifurcations in families of maps and connects functional iteration to universality constants.
+\end{Mot}
+
+\subsection{Basic Concept}
+
+\begin{Def}[Renormalization Group (RG)]
+Let $(X, T, \varphi_t)$ be a dynamical system. A \textbf{renormalization group} is a group $R$ together with an action on the dynamical system. This action may modify the phase space $X$, the time domain $T$, or the flow $\varphi_t$ by rescaling or reparameterization.
+\end{Def}
+
+\begin{Rem}
+The RG action can apply to functions $g$ or vector fields $f$, and also includes rescaling in parameter space $P$. The composite space $X \times P$ allows simultaneous transformation of phase and parameter domains.
+\end{Rem}
+
+\subsection{Example: Fold Normal Form and Critical Slowing Down}
+
+\begin{Ex}
+Consider the map $g(y; q) = q + y - y^2$ near a fold bifurcation ($q < 0$ small). The second iterate is:
+\[
+g^2(y; q) = q + (q + y - y^2) - (q + y - y^2)^2 \approx 2q + y - 2y^2.
+\]
+Define scalings $R_\alpha(y) = \alpha y$, $S_\beta(q) = \beta q$. With $\alpha = 2$, $\beta = 4$, the rescaled second iterate:
+\[
+R_2 g^2(R_2^{-1}Y, S_4^{-1}Q) \approx Q + Y - Y^2.
+\]
+This brings $g^2$ back to a similar fold form, establishing self-similarity. Asymptotically:
+\[
+N(q) \sim \frac{1}{\sqrt{q}}, \quad \text{as } q \to 0,
+\]
+for the number of iterations near $y = 0$.
+\end{Ex}
+
+\subsection{Example: Logistic Map and Period-Doubling}
+
+\begin{Ex}
+Consider the logistic map $g(x; p) = px(1 - x)$ for $p \in (0, 4]$. Define:
+\[
+\gamma_0 = \frac{p - 1}{p}, \quad g'(\gamma_0) = 2 - p.
+\]
+At $p = 3$, a flip bifurcation occurs. For $p > 3$, we find a 2-cycle $\gamma_1 = \{ \gamma_{11}, \gamma_{12} \}$, and its multiplier is:
+\[
+\frac{\partial g^2}{\partial x}(\gamma_{11}) = g'(\gamma_{11}) g'(\gamma_{12}) = 4 + 2p - p^2.
+\]
+A sequence of bifurcations occurs: $p_0, p_1, p_2, \dots$, forming the period-doubling cascade.
+\end{Ex}
+
+\begin{Def}[Superstable Cycle]
+A cycle of an iterated map is \textbf{superstable} if all its multipliers vanish. For logistic maps, this occurs when the critical point $x = 1/2$ belongs to the cycle.
+\end{Def}
+
+\begin{Ex}
+Let $P_n$ be parameters for superstable $2^n$-cycles. Then the closest point to $x = 1/2$ in the cycle is denoted by:
+\[
+d_n := g^{2^{n-1}}(x_{\max}, P_n) - x_{\max}, \quad x_{\max} = \tfrac{1}{2}.
+\]
+\end{Ex}
+
+\subsection{S-Unimodal Maps and Universality}
+
+\begin{Def}[Unimodal and S-Unimodal Maps]
+Let $I = [0,1]$. A map $g \in C^0(I, I)$ is \textbf{unimodal} if $g(0) = g(1) = 0$ and $g$ has a unique maximum in $(0,1)$. If $Sg < 0$ (negative Schwarzian), then $g$ is called \textbf{S-unimodal}.
+\end{Def}
+
+\subsection{Feigenbaum Universality}
+
+\begin{Ex}
+Let $p_n$ be the bifurcation points, and $P_n$ the superstable points. Then:
+\[
+p_\infty := \lim_{n \to \infty} p_n, \quad \delta_F := \lim_{n \to \infty} \frac{p_n - p_{n-1}}{p_{n+1} - p_n} \approx 4.6692,
+\]
+\[
+P_n = p_\infty - \kappa_1 \delta_F^{-n} + o(\delta_F^{-n}),
+\]
+\[
+d_n = \kappa_2 \alpha_F^{-n}, \quad \alpha_F \approx -2.5029.
+\]
+\end{Ex}
+
+\begin{Int}
+The constants $\delta_F$ and $\alpha_F$ are universal across all S-unimodal maps, showing the deep role of renormalization in determining dynamics near the edge of chaos.
+\end{Int}
+
+\subsection{Renormalization Equation}
+
+\begin{Def}[Renormalization Functional Equation]
+A fixed-point equation:
+\[
+g(x) = \alpha \cdot g^2\left( \frac{x}{\alpha}; P_\infty \right),
+\]
+can be solved under suitable boundary conditions: $g(0) = 1$, $g'(0) = 0$. This gives rise to the universal constants as eigenvalues of the linearized renormalization operator.
+\end{Def}
+
+\begin{Rem}
+Linearization shows the unique unstable eigenvalue of the renormalization operator is $\delta_F$, verifying that this universality constant governs the dynamics near the accumulation point of the cascade.
+\end{Rem}
+
+\columnbreak
+
+\section{Attractors}
+\label{sec:attractors}
+
+\begin{Mot}
+Having seen intricate orbit structures in one-dimensional maps, we now study the attracting parts of phase space more abstractly for general dynamical systems. This formalizes the notion of “what attracts trajectories” in forward time.
+\end{Mot}
+
+\subsection{Trapping Regions and Attractors}
+
+\begin{Def}
+A compact set $U$ is a \textbf{trapping region} if $\varphi_t(U) \subset \text{int}(U)$ for all $t > 0$.
+\end{Def}
+
+\begin{Ex}
+Consider the Lorenz system:
+\[
+\begin{aligned}
+x_1' &= \sigma(x_2 - x_1), \\
+x_2' &= \rho x_1 - x_2 - x_1x_3, \\
+x_3' &= x_1x_2 - \beta x_3,
+\end{aligned}
+\]
+with $\sigma, \rho, \beta > 0$. The ellipsoid defined by
+\[
+\sigma x_1^2 + x_2^2 + \beta \left(x_3 - \frac{\rho + \sigma}{2} \right)^2 = \frac{\beta(\rho + \sigma)^2}{4}
+\]
+is a trapping region.
+\end{Ex}
+
+\begin{Def}
+A set $A$ is an \textbf{attracting set} if there exists a trapping region $U$ such that
+\[
+A = \bigcap_{t \ge 0} \varphi_t(U).
+\]
+If $A$ is also indecomposable, then it is called an \textbf{attractor}.
+\end{Def}
+
+\begin{Thm}
+Let $V$ be a trapping region with attracting set $A$. Then:
+\begin{enumerate}
+    \item[(T1)] $A$ is closed. If $T = \mathbb{R}$ or $\mathbb{Z}$, then $A$ is invariant.
+    \item[(T2)] If $x_0 \in V$, then $\omega(x_0) \subset A$.
+    \item[(T3)] If $x^* \in A$ is a hyperbolic steady state, then $W^u(x^*) \subset A$.
+\end{enumerate}
+\end{Thm}
+
+\begin{Ex}
+Let $X = (0, \infty) \times S^1$ and consider the vector field in polar coordinates:
+\[
+r' = 1 - r, \quad \theta' = -(\theta - 1/4)(\theta - 3/4).
+\]
+The set $A = \{ (r, \theta) : r = 1 \}$ is an attractor. However, most trajectories go to $(1, 1/4)$, not $(1, 3/4)$, so a finer notion of attractor might identify only $(1, 1/4)$.
+\end{Ex}
+
+\subsection{Basins and Milnor Attractors}
+
+\begin{Def}
+Let $A$ be a closed invariant set. The \textbf{basin of attraction} is:
+\[
+B_A(A) := \{ x_0 \in X : \omega(x_0) \subset A \}.
+\]
+\end{Def}
+
+\begin{Def}
+A set $A$ is a \textbf{Milnor attractor} (w.r.t. measure $\mu$) if:
+\[
+\mu(B_A(A)) > 0
+\]
+and there is no smaller subset $\tilde{A} \subset A$ with $\mu(B_A(A) \setminus B_A(\tilde{A})) = 0$.
+\end{Def}
+
+\begin{Ex}
+For $x' = -x^2$, the point $x^* = 0$ is a Milnor attractor even though it is nonlinearly unstable.
+\end{Ex}
+
+\subsection{Examples and Types of Attractors}
+
+\begin{Ex}[Smale-Williams Solenoid]
+Let $g: S^1 \times D^2 \to S^1 \times D^2$ with
+\[
+g(\theta, x, y) = \left( 2\theta, \lambda x + \tfrac{1}{2}\cos(2\pi\theta), \lambda y + \tfrac{1}{2}\sin(2\pi\theta) \right),
+\]
+for $\lambda \in (0, 1/2)$. Then:
+\[
+A = \bigcap_{k=0}^\infty g^k(S^1 \times D^2)
+\]
+is the Smale-Williams solenoid, a Cantor set times an interval.
+\end{Ex}
+
+\begin{Ex}[Lorenz Attractor]
+For $\sigma = 28$, $\rho = 10$, $\beta = 8/3$, the Lorenz system has an attractor obtained from the trapping ellipsoid. This is the famous "Lorenz attractor".
+\end{Ex}
+
+\begin{Def}
+Let $A$ be an attractor. Then:
+\begin{itemize}
+    \item $A$ is a \textbf{chaotic attractor} if it is chaotic (Def. 15.7).
+    \item $A$ is a \textbf{hyperbolic attractor} if it is a hyperbolic set (Def. 7.1).
+    \item $A$ is a \textbf{strange attractor} if it is chaotic but not hyperbolic.
+\end{itemize}
+\end{Def}
+
+\begin{Thm}
+The Lorenz attractor has volume zero.
+\end{Thm}
+
+\begin{proof}
+Let $E(t)$ be the image of a trapping ellipsoid under the flow. Then:
+\[
+\frac{d}{dt} \text{Vol}(E(t)) = \int_{E(t)} \nabla \cdot f(x) \, dx = -(\sigma + 1 + \beta)\text{Vol}(E(t)),
+\]
+which implies exponential decay of volume $\Rightarrow$ volume zero.
+\end{proof}
+
+\subsection{Fractal Dimension}
+
+\begin{Def}[Box-Counting Dimension]
+Let $S \subset \mathbb{R}^d$ and $N(r, S)$ the number of boxes of side $r$ needed to cover $S$. Then:
+\[
+\dim_B(S) := \lim_{r \to 0} \frac{\ln N(r, S)}{\ln(1/r)}.
+\]
+\end{Def}
+
+\begin{Ex}
+For the middle-third Cantor set:
+\[
+\dim_B(K) = \lim_{j \to \infty} \frac{\ln(2^j)}{\ln(3^j)} = \frac{\ln 2}{\ln 3} \approx 0.6309.
+\]
+\end{Ex}
+
+\begin{Rem}
+Strange attractors are often defined as chaotic sets with non-integer (fractal) dimension. Other notions include Hausdorff, Lyapunov, and correlation dimensions.
+\end{Rem}
+
+\section{Conley’s Theorem}
+\label{sec:conley}
+
+\begin{Mot}
+In contrast to attractors that describe long-term behavior, Conley’s Theorem provides a general decomposition of dynamics into “gradient-like” and “recurrent” parts. It characterizes dynamics via chain recurrence, generalizing Lyapunov stability.
+\end{Mot}
+
+\subsection{Chain Recurrence}
+
+\begin{Def}[Chain Recurrence]
+Let $g: X \to X$ be a map on a metric space $(X, d)$. A point $x \in X$ is \textbf{chain recurrent} if for all $\delta > 0$, there exists a finite sequence $\{x_k\}_{k=0}^n$ with $x_0 = x_n = x$ and
+\[
+d(g(x_k), x_{k+1}) < \delta \quad \text{for all } k = 0, \dots, n-1.
+\]
+\end{Def}
+
+\begin{Rem}
+This is equivalent to saying there exists a $\delta$-pseudo-orbit from $x$ back to itself. Chain recurrence is weaker than non-wandering: $\text{NW}(g) \subset \text{CR}(g)$.
+\end{Rem}
+
+\begin{Def}[Chain Equivalence]
+Two points $x, y \in \text{CR}(g)$ are \textbf{chain equivalent} if for all $\delta > 0$, there exist $\delta$-chains from $x$ to $y$ and from $y$ to $x$.
+\end{Def}
+
+\begin{Rem}
+Chain equivalence is an equivalence relation and partitions $\text{CR}(g)$ into disjoint chain classes.
+\end{Rem}
+
+\subsection{Conley’s Theorem}
+
+\begin{Thm}[Conley’s Theorem]
+Let $g: X \to X$ be a homeomorphism on a compact metric space $(X, d)$. Then there exists a continuous function $L: X \to \mathbb{R}$ such that:
+\begin{enumerate}
+    \item[(T1)] If $x \notin \text{CR}(g)$, then $L(g(x)) < L(x)$.
+    \item[(T2)] For $x, y \in \text{CR}(g)$, we have $L(x) = L(y)$ if and only if $x$ and $y$ are chain equivalent.
+    \item[(T3)] The set $L(\text{CR}(g)) \subset \mathbb{R}$ is compact and nowhere dense.
+\end{enumerate}
+\end{Thm}
+
+\subsection{Construction of the Lyapunov Function}
+
+Let $A$ be an attractor with an isolating neighborhood $U$. Define the \textbf{dual repellor}:
+\[
+A^* := \bigcap_{k \ge 0} g^{-k}(X \setminus \overline{U}).
+\]
+
+\begin{Lem}
+There exists $L \in C(X, [0, 1])$ such that $L|_A = 0$, $L|_{A^*} = 1$, and $L(g(x)) < L(x)$ for all $x \notin A \cup A^*$.
+\end{Lem}
+
+\begin{PrI}
+We define a function $\alpha: X \to [0, 1]$ such that it drops from 1 to 0 across $U$ and use it to construct sequences $\alpha_k(x) := \alpha(g^k(x))$. Then form a weighted average
+\[
+L(x) = \sum_{k = -\infty}^\infty a_k \alpha_k(x),
+\]
+with $\sum a_k = 1$, ensuring monotonicity and values strictly between 0 and 1 outside $A \cup A^*$.
+\end{PrI}
+
+\subsection{Characterizing Chain Recurrence}
+
+\begin{Lem}
+Let $\{A_i\}_{i=1}^\infty$ be all attractors for $g$. Then:
+\[
+\text{CR}(g) = \bigcap_{i=1}^\infty (A_i \cup A_i^*).
+\]
+\end{Lem}
+
+\begin{proof}[Sketch]
+If $x \notin A_i \cup A_i^*$ for some $i$, then any pseudo-orbit starting at $x$ fails to return, violating chain recurrence. Conversely, define $Ch(x, \delta)$ as the set of all $\delta$-reachable points from $x$. These are trapping regions, so one can construct attractors and their repellors to show $x \in \text{CR}(g)$.
+\end{proof}
+
+\begin{Lem}
+For $x, y \in \text{CR}(g)$, they are in the same chain class if and only if for every $i$, either both belong to $A_i$ or both to $A_i^*$.
+\end{Lem}
+
+\begin{proof}
+Use contraposition: If $x \in A_i$, $y \in A_i^*$, no $\delta$-chain can connect them in both directions.
+\end{proof}
+
+\subsection{Proof of Conley’s Theorem}
+
+\begin{proof}[Proof of Theorem]
+Let $L_i$ be the Lyapunov function associated with attractor $A_i$. Define:
+\[
+L(x) := \sum_{i=1}^\infty \frac{2}{3^i} L_i(x).
+\]
+Then:
+\begin{itemize}
+    \item For $x \notin \text{CR}(g)$, some $L_i$ decreases along $g(x)$, hence $L(g(x)) < L(x)$.
+    \item If $x, y \in \text{CR}(g)$ are chain equivalent, all $L_i(x) = L_i(y)$, hence $L(x) = L(y)$.
+    \item Conversely, if $L(x) = L(y)$, the ternary expansion only uses digits $0$ and $2$, so $x, y$ must lie in the same $A_i$ or $A_i^*$ for all $i$, hence are chain equivalent.
+    \item The image $L(\text{CR}(g))$ is a subset of the middle-third Cantor set and hence compact and nowhere dense.
+\end{itemize}
+\end{proof}
+
+\section{Invariant Measures}
+\label{sec:invariant_measures}
+
+\begin{Mot}
+To understand long-term statistical behavior of dynamical systems, especially chaotic ones, we often shift focus from individual orbits to invariant distributions over phase space. Invariant measures provide the mathematical framework for this probabilistic description.
+\end{Mot}
+
+\subsection{Basic Measure Theory}
+
+\begin{Def}
+Let $X$ be a non-empty set. A \textbf{$\sigma$-algebra} $\mathcal{F}$ on $X$ is a non-empty collection of subsets of $X$ such that:
+\begin{itemize}
+    \item $E \in \mathcal{F} \Rightarrow E^c \in \mathcal{F}$,
+    \item $E_j \in \mathcal{F}$ for $j \in \mathbb{N} \Rightarrow \bigcup_{j=1}^\infty E_j \in \mathcal{F}$.
+\end{itemize}
+\end{Def}
+
+\begin{Def}
+A \textbf{measure} $\mu : \mathcal{F} \rightarrow [0, \infty]$ satisfies:
+\begin{itemize}
+    \item $\mu(\emptyset) = 0$,
+    \item For disjoint $\{E_j\}$ in $\mathcal{F}$: $\mu\left(\bigcup_j E_j\right) = \sum_j \mu(E_j)$.
+\end{itemize}
+This property is called \emph{countable additivity}.
+\end{Def}
+
+\begin{Def}
+A \textbf{probability measure} is a measure $\mu$ such that $\mu(X) = 1$.
+\end{Def}
+
+\begin{Ex}
+\leavevmode
+\begin{itemize}
+    \item \textbf{Dirac measure}: $\delta_{x_0}(E) = 1$ if $x_0 \in E$, $0$ otherwise.
+    \item \textbf{Lebesgue measure} on $\mathbb{R}$: defined via outer measure covering by intervals.
+\end{itemize}
+\end{Ex}
+
+\subsection{Integration and Function Spaces}
+
+\begin{Def}
+Let $(X, \mathcal{F}, \mu)$ be a measure space. For $p \in [1, \infty)$, define:
+\[
+L^p(X, \mu) := \left\{ f : \|f\|_{L^p} = \left( \int_X |f|^p d\mu \right)^{1/p} < \infty \right\}.
+\]
+$L^\infty$ denotes the space of measurable functions with finite essential supremum.
+\end{Def}
+
+\subsection{Invariant Measures and Dynamical Systems}
+
+\begin{Def}
+Let $g : X \to X$ be a measurable map. A measure $\mu$ is \textbf{invariant under $g$} if:
+\[
+\mu(g^{-1}(A)) = \mu(A) \quad \forall A \in \mathcal{F}.
+\]
+\end{Def}
+
+\begin{Def}
+A map $g : X \to X$ is \textbf{measure-preserving} if it satisfies the above condition.
+\end{Def}
+
+\begin{Ex}
+On $S^1 = \mathbb{R}/\mathbb{Z}$ with Lebesgue measure, the rotation $x \mapsto x + r \mod 1$ is measure-preserving for any $r \in \mathbb{R}$.
+\end{Ex}
+
+\subsection{Poincaré Recurrence}
+
+\begin{Thm}[Poincaré Recurrence]
+Let $(X, \mathcal{F}, \mu)$ be a probability space and $g : X \to X$ measure-preserving. For any $B$ with $\mu(B) > 0$, almost every point $x \in B$ returns to $B$ infinitely often under iterations of $g$.
+\end{Thm}
+
+\begin{proof}[Idea]
+Define sets $B_N = \bigcup_{n \geq N} g^{-n}(B)$. The nested intersection $\bigcap_N B_N$ contains the points returning to $B$ infinitely often. Using measure invariance, one shows $\mu(B \cap \bigcap_N B_N) = \mu(B)$.
+\end{proof}
+
+\subsection{Existence of Invariant Measures}
+
+\begin{Thm}[Krylov–Bogolyubov]
+Let $X$ be a compact metric space and $g : X \to X$ a continuous map. Then there exists a $g$-invariant Borel probability measure.
+\end{Thm}
+
+\begin{proof}[Sketch]
+Construct empirical averages $S_n f(x) = \frac{1}{n} \sum_{j=0}^{n-1} f(g^j(x))$. Using a diagonal argument over a countable dense set in $C(X)$, define a linear functional $L_x$ and apply Riesz Representation Theorem to obtain an invariant measure.
+\end{proof}
+
+\begin{Ex}[Gauss Transformation]
+Let $X = [0, 1)$ and $g(x) = \begin{cases}
+0 & x = 0, \\
+1/x - \lfloor 1/x \rfloor & x \neq 0
+\end{cases}$. The invariant measure is:
+\[
+\mu((a,b)) = \frac{1}{\ln 2} \int_a^b \frac{1}{1 + y} dy.
+\]
+This transformation relates to continued fractions and conjugates to a left shift on sequences.
+\end{Ex}
+
+\subsection{Integral Preservation}
+
+\begin{Lem}
+Let $g : X \to X$ and $\mu$ be a $g$-invariant measure. Then for all $f \in L^1(X, \mu)$:
+\[
+\int_X f(x) \, d\mu(x) = \int_X f(g(x)) \, d\mu(x).
+\]
+\end{Lem}
+
+\columnbreak
+
+\section{Ergodicity}
+\label{sec:ergodicity}
+
+\begin{Mot}
+Invariant measures describe long-term statistical behavior, but what if there are multiple disjoint invariant sets? Ergodicity ensures that no such decomposition exists — that the system is “indecomposable” from a measure-theoretic point of view.
+\end{Mot}
+
+\subsection{Definition and Basic Properties}
+
+\begin{Def}[Ergodicity]
+Let $(X, \mathcal{F}, \mu)$ be a probability space. A measure-preserving transformation $g : X \to X$ is called \textbf{ergodic} if every $g$-invariant measurable set has either full or zero measure. That is, if $g^{-1}(A) = A$, then $\mu(A) \in \{0, 1\}$.
+\end{Def}
+
+\begin{Lem}
+A map $g$ is ergodic if and only if every $f \in L^2(X)$ satisfying $f \circ g = f$ almost everywhere must be constant almost everywhere.
+\end{Lem}
+
+\begin{Ex}[Circle Rotation]
+Let $X = S^1 \cong [0,1)$ and define $g(x) = x + r \mod 1$. Then $g$ is ergodic with respect to Lebesgue measure if and only if $r$ is irrational. This follows from Fourier series and the uniqueness of coefficients.
+\end{Ex}
+
+\subsection{The Koopman Operator}
+
+\begin{Def}
+For a measurable function $f : X \to \mathbb{R}$, define the \textbf{Koopman operator} $L_g$ by:
+\[
+(L_g f)(x) = f(g(x)).
+\]
+If $g$ is measure-preserving, then $L_g : L^1 \to L^1$ is linear, positive, and norm-preserving.
+\end{Def}
+
+\subsection{Maximal Ergodic Theorem}
+
+\begin{Thm}[Maximal Ergodic Theorem]
+Let $g$ be measure-preserving and $f \in L^1(X)$. Define
+\[
+f_n = \sum_{j=0}^{n-1} L_g^j f, \quad F_N = \max_{0 \le n \le N} f_n.
+\]
+Then:
+\[
+\int_{\{F_N > 0\}} f \, d\mu \ge 0.
+\]
+\end{Thm}
+
+\begin{Cor}
+Let $h \in L^1$ and define:
+\[
+B_\alpha := \left\{ x : \sup_{n \ge 1} \frac{1}{n} \sum_{j=0}^{n-1} h(g^j(x)) > \alpha \right\}.
+\]
+Then for any invariant set $A$,
+\[
+\int_{B_\alpha \cap A} h \, d\mu \ge \alpha \mu(B_\alpha \cap A).
+\]
+\end{Cor}
+
+\subsection{Birkhoff Ergodic Theorem}
+
+\begin{Thm}[Birkhoff Ergodic Theorem]
+Let $f \in L^1(X)$ and $g$ be measure-preserving. Then for almost every $x$:
+\begin{enumerate}
+    \item[(T1)] The time average converges:
+    \[
+    \lim_{n \to \infty} \frac{1}{n} \sum_{j=0}^{n-1} f(g^j(x)) =: f^*(x).
+    \]
+    \item[(T2)] $f^*$ is invariant and satisfies $\int f^* \, d\mu = \int f \, d\mu$.
+    \item[(T3)] If $g$ is ergodic, then $f^*(x) = \int f \, d\mu$ almost everywhere.
+\end{enumerate}
+\end{Thm}
+
+\begin{Int}
+This theorem guarantees that for almost every initial condition, time averages converge, and if the system is ergodic, they converge to the same value — the space average. This justifies using spatial averages in place of long-term measurements.
+\end{Int}
+
+\subsection{Von Neumann Ergodic Theorem}
+
+\begin{Thm}[Von Neumann L\textsuperscript{p} Ergodic Theorem]
+Let $f \in L^p(X)$ for $1 \le p < \infty$ and define
+\[
+(S_n f)(x) := \frac{1}{n} \sum_{j=0}^{n-1} f(g^j(x)).
+\]
+Then $S_n f \to f^*$ in $L^p$, where $f^*$ is invariant and $\|S_n f - f^*\|_{L^p} \to 0$.
+\end{Thm}
+
+\begin{PrS}
+Approximate $f$ by a bounded function $h \in L^\infty$ and show $S_n h$ converges in $L^p$ by Birkhoff. Then use triangle inequality to control $S_n f$.
+\end{PrS}
+
+\columnbreak
+
+\section{Mixing}
+\label{sec:mixing}
+
+\begin{Mot}
+While ergodicity rules out invariant subsets of positive measure, mixing describes stronger statistical independence. It ensures that the system "forgets" its initial state, even correlations between sets decay over time.
+\end{Mot}
+
+\subsection{Average Independence via Cesàro Means}
+
+\begin{Thm}[Limit of Cesàro Means]
+Let $(X, \mathcal{F}, \mu)$ be a probability space and $g : X \to X$ be a measure-preserving transformation. Then $g$ is ergodic if and only if for all $A, B \in \mathcal{F}$:
+\[
+\lim_{n \to \infty} \frac{1}{n} \sum_{j=0}^{n-1} \mu(g^{-j}(A) \cap B) = \mu(A) \mu(B).
+\]
+\end{Thm}
+
+\begin{proof}[Idea]
+Use the Birkhoff Ergodic Theorem for the indicator function $f = \mathbf{1}_A$. Taking integrals against $\mathbf{1}_B$ and applying the Dominated Convergence Theorem yields the desired average independence.
+\end{proof}
+
+\subsection{Definitions of Mixing}
+
+\begin{Def}
+Let $g : X \to X$ be a measure-preserving transformation of a probability space $(X, \mathcal{F}, \mu)$.
+\begin{itemize}
+    \item[(D1)] $g$ is \textbf{weak-mixing} if for all $A, B \in \mathcal{F}$,
+    \[
+    \lim_{n \to \infty} \frac{1}{n} \sum_{j=0}^{n-1} \left| \mu(g^{-j}(A) \cap B) - \mu(A)\mu(B) \right| = 0.
+    \]
+    \item[(D2)] $g$ is \textbf{strong-mixing (or just mixing)} if for all $A, B \in \mathcal{F}$,
+    \[
+    \lim_{n \to \infty} \mu(g^{-n}(A) \cap B) = \mu(A) \mu(B).
+    \]
+\end{itemize}
+\end{Def}
+
+\begin{Rem}
+Strong-mixing implies weak-mixing, which implies ergodicity. These implications are strict; there exist ergodic systems that are not mixing.
+\end{Rem}
+
+\subsection{Examples of Mixing Maps}
+
+\begin{Ex}[Expanding Circle Map]
+Let $X = S^1 \cong [0,1)$ and $g(x) = \alpha x \mod 1$ with $\alpha \in \mathbb{Z}$, $|\alpha| > 1$. Then $g$ is strong-mixing with respect to Lebesgue measure. For dyadic intervals $A, B \subset [0,1)$, one computes:
+\[
+\mu(A \cap g^{-n}(B)) = \mu(A)\mu(B)
+\]
+for $n$ large enough by uniform refinement of intervals.
+\end{Ex}
+
+\begin{Prop}
+Expanding circle endomorphisms are strong-mixing with respect to Lebesgue measure.
+\end{Prop}
+
+\subsection{Operator-Theoretic Characterization}
+
+\begin{Def}
+Let $L = L_g : L^\infty \to L^\infty$ be the Koopman operator defined by $(Lf)(x) = f(g(x))$. Its adjoint $P = P_g : L^1 \to L^1$ is the \textbf{Perron-Frobenius operator} satisfying:
+\[
+\langle Pf, h \rangle = \langle f, Lh \rangle \quad \text{for } f \in L^1, h \in L^\infty.
+\]
+\end{Def}
+
+\begin{Thm}[Operator Characterization of Mixing]
+Let $g : X \to X$ be measure-preserving on a probability space $(X, \mathcal{F}, \mu)$. Then $g$ is strong-mixing if and only if
+\[
+\lim_{n \to \infty} \langle P^n f, h \rangle = \langle f, 1 \rangle \langle 1, h \rangle \quad \forall f \in L^1, h \in L^\infty.
+\]
+\end{Thm}
+
+\subsection{Spectral Viewpoint}
+
+\begin{Def}
+Let $L = L_g : L^2 \to L^2$ be the Koopman operator. Then:
+\begin{itemize}
+    \item $L$ has \textbf{pure-point spectrum} if eigenfunctions span $L^2$.
+    \item $L$ has \textbf{continuous spectrum} if $1$ is the only eigenvalue.
+\end{itemize}
+\end{Def}
+
+\begin{Thm}[Spectral Characterization]
+Let $g$ be a measure-preserving map:
+\begin{itemize}
+    \item[(T1)] $g$ is ergodic $\Leftrightarrow$ 1 is a simple eigenvalue of $L$.
+    \item[(T2)] If $g$ is ergodic, all eigenvalues of $L$ are simple.
+    \item[(T3)] If $g$ is invertible and $L$ has continuous spectrum, then $g$ is weak-mixing.
+\end{itemize}
+\end{Thm}
+
+\subsection{Proof Sketch for (T3)}
+
+\begin{PrS}
+Use the Spectral Theorem: for $f \in L^2$, there exists a measure $\mu_f$ on the spectrum such that:
+\[
+\langle L^n f, f \rangle = \int \lambda^n \, d\mu_f(\lambda).
+\]
+Averaging over $n$ and using that $\mu_f$ has no atoms gives:
+\[
+\lim_{n \to \infty} \frac{1}{n} \sum_{j=0}^{n-1} |\langle L^j f, f \rangle|^2 = 0,
+\]
+which is equivalent to weak-mixing.
+\end{PrS}
+
+\begin{Ex}[Irrational Rotation is Not Mixing]
+Let $g(x) = x + r \mod 1$ on $S^1$. The Koopman operator has a complete set of eigenfunctions $f_n(x) = e^{2\pi i n x}$ with eigenvalues $e^{2\pi i n r}$, hence pure-point spectrum. Thus, the system is not weak-mixing.
+\end{Ex}
+
+\columnbreak
+
+\section{Entropy}
+\label{sec:entropy}
+
+\begin{Mot}
+Spectral properties can distinguish some dynamical systems, but often they are too coarse. Entropy, inspired by statistical physics, serves as a more sensitive invariant that measures the system’s complexity in terms of information production.
+\end{Mot}
+
+\subsection{Partitions and Entropy of Partitions}
+
+\begin{Def}
+A (finite) partition $\mathcal{A} = \{A_1, \ldots, A_m\}$ of $(X, \mathcal{F}, \mu)$ is a disjoint collection of elements in $\mathcal{F}$ whose union is $X$. The join (common refinement) of partitions $\mathcal{A}$ and $\mathcal{B}$ is $\mathcal{A} \vee \mathcal{B} = \{A_k \cap B_n\}$.
+\end{Def}
+
+\begin{Def}
+The \textbf{entropy} of a finite partition $\mathcal{A} = \{A_1, \ldots, A_m\}$ is
+\[
+H(\mathcal{A}) := - \sum_{j=1}^{m} \mu(A_j) \ln \mu(A_j).
+\]
+This quantity represents the average information gained by observing which atom $A_j$ the point belongs to.
+\end{Def}
+
+\subsection{Entropy of Transformations}
+
+\begin{Def}
+Let $g : X \to X$ be measure-preserving and $\mathcal{A}$ a finite partition. Define
+\[
+h(g, \mathcal{A}) := \lim_{n \to \infty} \frac{1}{n} H\left( \bigvee_{j=0}^{n-1} g^{-j}\mathcal{A} \right),
+\]
+and define the \textbf{entropy} of $g$ as
+\[
+h(g) := \sup_{\mathcal{A}} h(g, \mathcal{A}),
+\]
+where the supremum is over all finite partitions.
+\end{Def}
+
+\begin{Thm}[Entropy is a Conjugacy Invariant]
+If two measure-preserving transformations $g_1$ and $g_2$ are conjugate, then $h(g_1) = h(g_2)$.
+\end{Thm}
+
+\subsection{Conditional Entropy and Properties}
+
+\begin{Def}
+Let $\mathcal{A}, \mathcal{B}$ be finite partitions. Define the \textbf{conditional entropy}:
+\[
+H(\mathcal{A} \mid \mathcal{B}) := -\sum_{i,j} \mu(B_j) \mu(A_i \mid B_j) \ln \mu(A_i \mid B_j).
+\]
+\end{Def}
+
+\begin{Thm}[Conditional Entropy Properties]
+Let $\mathcal{A}, \mathcal{B}, \mathcal{C}$ be finite subalgebras of $\mathcal{F}$:
+\begin{romanenumerate}
+    \item $H(\mathcal{A} \vee \mathcal{B}) = H(\mathcal{A}) + H(\mathcal{B} \mid \mathcal{A})$
+    \item $\mathcal{A} \subseteq \mathcal{B} \Rightarrow H(\mathcal{A}) \le H(\mathcal{B})$
+    \item $\mathcal{C} \subseteq \mathcal{B} \Rightarrow H(\mathcal{A} \mid \mathcal{C}) \ge H(\mathcal{A} \mid \mathcal{B})$
+    \item $H(\mathcal{A} \vee \mathcal{B} \mid \mathcal{C}) \le H(\mathcal{A} \mid \mathcal{C}) + H(\mathcal{B} \mid \mathcal{C})$
+    \item $H(g^{-1}\mathcal{A} \mid g^{-1}\mathcal{B}) = H(\mathcal{A} \mid \mathcal{B})$
+\end{romanenumerate}
+\end{Thm}
+
+\subsection{Properties of Entropy of a Transformation}
+
+\begin{Thm}
+Let $g$ be measure-preserving and $\mathcal{A}, \mathcal{B}$ finite partitions:
+\begin{romanenumerate}
+    \item $h(g, \mathcal{A}) \le H(\mathcal{A})$
+    \item $h(g, \mathcal{A} \vee \mathcal{B}) \le h(g, \mathcal{A}) + h(g, \mathcal{B})$
+    \item $h(g, \mathcal{A}) \le h(g, \mathcal{B}) + H(\mathcal{A} \mid \mathcal{B})$
+    \item If $g$ is invertible, then $h(g, \mathcal{A}) = h(g, \bigvee_{j=-k}^{k} g^j\mathcal{A})$
+\end{romanenumerate}
+\end{Thm}
+
+\subsection{Kolmogorov–Sinai Theorem}
+
+\begin{Thm}[Kolmogorov–Sinai Theorem]
+Let $g$ be an invertible measure-preserving transformation and $\mathcal{A}$ a finite generating subalgebra. Then
+\[
+h(g) = h(g, \mathcal{A}).
+\]
+\end{Thm}
+
+\subsection{Example: Bernoulli Shift}
+
+\begin{Ex}
+Let $X = \Sigma_k$ be the space of bi-infinite sequences over $\{0, \ldots, k-1\}$ with measure determined by $p = (p_0, \ldots, p_{k-1})$. The shift map $g(x)_n = x_{n+1}$ is measure-preserving.
+
+Let $\mathcal{A} = \{x : x_0 = j\}$. Then
+\[
+H(\mathcal{A}_n) = -n \sum_{j=0}^{k-1} p_j \ln p_j \quad \Rightarrow \quad h(g) = -\sum_{j=0}^{k-1} p_j \ln p_j.
+\]
+
+In particular, if $p = (1/2, 1/2)$ the entropy is $\ln 2$; if $p = (1/3, 1/3, 1/3)$ it is $\ln 3$. Hence, these systems are not conjugate.
+\end{Ex}
+
+\begin{Int}
+Entropy measures the average information produced per step. Higher entropy implies greater unpredictability. Through Kolmogorov–Sinai’s theorem, we can compute entropy by focusing on simple generating partitions.
+\end{Int}
+
+\vfill
+
+\end{multicols*}
+
+\end{document}
