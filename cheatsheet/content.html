@@ -26,9 +26,200 @@
   <div class="coursemap"><b>Local</b><span class="sep">&rarr;</span><b>Equivalence</b><span class="sep">&rarr;</span><b>Robustness</b><span class="sep">&rarr;</span><b>Bifurcations</b><span class="sep">&rarr;</span><b>Chaos</b><span class="sep">&rarr;</span><b>Statistics</b></div>
 </header>
 
+<!-- ================================================== hero : the dynamical hierarchy -->
+<section class="hero" id="panel-hero">
+  <div class="hero-head">
+    <h2>The dynamical hierarchy</h2>
+    <div class="hero-sub">an invariant object $S$ of a dynamical system $(X, T, \varphi_t)$ &mdash; each column spans exactly the properties established for it; a gap is a genuine <i>no</i> (or beyond the notes)</div>
+  </div>
+  <div class="hlattice">
+    <!-- ===== property spine (grid column 6) ===== -->
+    <div class="hgroup hue-n" style="grid-row:1/3"><span>geometry</span></div>
+    <div class="hgroup hue-a" style="grid-row:3/5"><span>stability</span></div>
+    <div class="hgroup hue-b" style="grid-row:5/7"><span>robustness</span></div>
+    <div class="hgroup hue-c" style="grid-row:7/10"><span>chaos</span></div>
+    <div class="hgroup hue-d" style="grid-row:10/13"><span>statistics</span></div>
+
+    <div class="hprop hr0" style="grid-row:1">
+      <div class="hpt"><b>0</b> Invariant</div>
+      <div class="hpf">$\varphi_t(S) \subseteq S \quad \forall t$</div>
+    </div>
+    <div class="hprop" style="grid-row:2">
+      <div class="hpt"><b>1</b> A single point or periodic orbit</div>
+      <div class="hpf">$\varphi_t(x^*) = x^*$ &nbsp;or&nbsp; $\varphi_{t+T_0} = \varphi_t$ on $S$</div>
+    </div>
+    <div class="hprop" style="grid-row:3">
+      <div class="hpt"><b>2</b> Lyapunov stable</div>
+      <div class="hpf">$\forall U \,\exists V\!: \varphi_t(V) \subseteq U \;\;\forall t \ge 0$</div>
+    </div>
+    <div class="hprop" style="grid-row:4">
+      <div class="hpt"><b>3</b> Attracts a neighborhood</div>
+      <div class="hpf">$\omega(x_0) \subset S \quad \forall x_0 \in U$</div>
+    </div>
+    <div class="hprop" style="grid-row:5">
+      <div class="hpt"><b>4</b> Uniformly hyperbolic</div>
+      <div class="hpf">$T_x M = E^s(x) \oplus E^u(x)$</div>
+    </div>
+    <div class="hprop" style="grid-row:6">
+      <div class="hpt"><b>5</b> Persistent (locally structurally stable)</div>
+      <div class="hpf">survives $C^1$-small perturbations</div>
+    </div>
+    <div class="hprop" style="grid-row:7">
+      <div class="hpt"><b>6</b> Topologically transitive</div>
+      <div class="hpf">some orbit is dense in $S$</div>
+    </div>
+    <div class="hprop" style="grid-row:8">
+      <div class="hpt"><b>7</b> Sensitive dependence</div>
+      <div class="hpf">$|x_0 - y_0| < \delta,\ |\varphi_T(x_0) - \varphi_T(y_0)| \ge r$</div>
+    </div>
+    <div class="hprop" style="grid-row:9">
+      <div class="hpt"><b>8</b> Chaotic</div>
+      <div class="hpf">$:= \mathbf{6} \wedge \mathbf{7}$</div>
+    </div>
+    <div class="hprop" style="grid-row:10">
+      <div class="hpt"><b>9</b> Ergodic invariant measure</div>
+      <div class="hpf">$g^{-1}(A) = A \Rightarrow \mu(A) \in \{0,1\}$</div>
+    </div>
+    <div class="hprop" style="grid-row:11">
+      <div class="hpt"><b>10</b> Mixing</div>
+      <div class="hpf">$\mu(g^{-n}A \cap B) \to \mu(A)\,\mu(B)$</div>
+    </div>
+    <div class="hprop" style="grid-row:12">
+      <div class="hpt"><b>11</b> Positive entropy</div>
+      <div class="hpf">$h(g) > 0$</div>
+    </div>
+
+    <!-- ===== left columns: point-like objects ===== -->
+    <div class="hcol hue-a" style="grid-column:1; grid-row:1/7">
+      <h4>stable node / focus</h4>
+      <div class="ex">all $\operatorname{Re}\lambda_j < 0$ (maps: $|\mu_j| < 1$); hyperbolic, hence persistent</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:2; grid-row:1/5">
+      <h4>center</h4>
+      <div class="ex">$\ddot x + x = 0$: stable, <i>not</i> attracting, destroyed by perturbation</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:3; grid-row:1/3">
+      <h4>saddle</h4>
+      <div class="ex">unstable&mdash;</div>
+    </div>
+    <div class="hjoint" style="grid-column:3; grid-row:3/5"></div>
+    <div class="hcol hue-a" style="grid-column:3; grid-row:5/7">
+      <div class="ex">&mdash;yet hyperbolic and persistent</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:4; grid-row:1/7">
+      <h4>stable periodic orbit</h4>
+      <div class="ex">multipliers $|\mu_j| < 1$ of the Poincar&eacute; map</div>
+    </div>
+    <div class="hcol hue-e" style="grid-column:5; grid-row:1/2">
+      <h4>orbit closures, $\omega$-limits</h4>
+      <div class="ex">the raw material</div>
+    </div>
+
+    <!-- ===== right columns: set-like systems ===== -->
+    <div class="hcol hue-d" style="grid-column:7; grid-row:1/2">
+      <h4>irrational rotation</h4>
+      <div class="ex">$x + r \bmod 1$</div>
+    </div>
+    <div class="hjoint" style="grid-column:7; grid-row:2/7"></div>
+    <div class="hcol hue-d" style="grid-column:7; grid-row:7/8">
+      <div class="ex">all orbits dense</div>
+    </div>
+    <div class="hjoint" style="grid-column:7; grid-row:8/10"></div>
+    <div class="hcol hue-d" style="grid-column:7; grid-row:10/11">
+      <div class="ex">ergodic $\iff r \notin \Q$; isometry: no sensitivity; pure point spectrum $\Rightarrow$ never mixing</div>
+    </div>
+
+    <div class="hcol hue-c" style="grid-column:8; grid-row:1/2">
+      <h4>doubling &middot; tent &middot; logistic-4</h4>
+    </div>
+    <div class="hjoint" style="grid-column:8; grid-row:2/7"></div>
+    <div class="hcol hue-c" style="grid-column:8; grid-row:7/12">
+      <div class="ex">chaotic on $[0,1]$; $l = \ln 2$; expanding $\Rightarrow$ mixing $\Rightarrow$ ergodic (Lebesgue)</div>
+    </div>
+
+    <div class="hcol hue-b" style="grid-column:9; grid-row:1/2">
+      <h4>cat map</h4>
+      <div class="ex">$A = \left(\begin{smallmatrix} 2 & 1 \\ 1 & 1 \end{smallmatrix}\right)$ on $\T^2$</div>
+    </div>
+    <div class="hjoint" style="grid-column:9; grid-row:2/5"></div>
+    <div class="hcol hue-b" style="grid-column:9; grid-row:5/7">
+      <div class="ex">Anosov: $\Lambda = \T^2$; open in $C^1$, structurally stable</div>
+    </div>
+
+    <div class="hcol hue-c" style="grid-column:10; grid-row:1/2">
+      <h4>horseshoe $X$</h4>
+    </div>
+    <div class="hjoint" style="grid-column:10; grid-row:2/5"></div>
+    <div class="hcol hue-c" style="grid-column:10; grid-row:5/10">
+      <div class="ex">$\cong$ shift on $\Sigma_2$; hyperbolic, so chaos <i>persists</i>; skips stability entirely</div>
+    </div>
+
+    <div class="hcol hue-d" style="grid-column:11; grid-row:1/2">
+      <h4>solenoid</h4>
+    </div>
+    <div class="hjoint" style="grid-column:11; grid-row:2/4"></div>
+    <div class="hcol hue-d" style="grid-column:11; grid-row:4/7">
+      <div class="ex">hyperbolic attractor; locally Cantor $\times$ interval</div>
+    </div>
+
+    <div class="hcol hue-e" style="grid-column:12; grid-row:1/2">
+      <h4>Lorenz attractor</h4>
+    </div>
+    <div class="hjoint" style="grid-column:12; grid-row:2/4"></div>
+    <div class="hcol hue-e" style="grid-column:12; grid-row:4/5">
+      <div class="ex">trapping ellipsoid; volume 0</div>
+    </div>
+    <div class="hjoint" style="grid-column:12; grid-row:5/9"></div>
+    <div class="hcol hue-e" style="grid-column:12; grid-row:9/10">
+      <div class="ex">strange: chaotic&#8224; but <i>not</i> hyperbolic &mdash; the gap at row 4 <i>is</i> the definition</div>
+    </div>
+
+    <div class="hcol hue-d" style="grid-column:13; grid-row:1/2">
+      <h4>Bernoulli shift</h4>
+      <div class="ex">$(\Sigma_k, \sigma, p)$</div>
+    </div>
+    <div class="hjoint" style="grid-column:13; grid-row:2/7"></div>
+    <div class="hcol hue-d" style="grid-column:13; grid-row:7/13">
+      <div class="ex">mixing&#8224; on cylinders; $h = -\sum p_j \ln p_j > 0$ &mdash; reaches the very bottom</div>
+    </div>
+    <div class="hnote" style="grid-column:1/6; grid-row:8/13">
+      <p><b>How to read this.</b> Each column is one object of the course; it spans exactly the numbered properties it has. A longer column is a stronger object; a gap is a genuine <i>no</i> (the saddle is never stable, the Lorenz attractor is never hyperbolic). The left-to-right staircase &mdash; from equilibria to Bernoulli shifts &mdash; is the arc of the course.</p>
+      <p class="small">&#8224; standard facts completing the picture &mdash; the notes prove chaos for horseshoe and interval maps, mixing for expanding maps, entropy for Bernoulli shifts.</p>
+    </div>
+  </div>
+</section>
+
 <div class="cols">
 
 <div class="col">
+
+<section class="panel band-a" id="panel-a0">
+  <h3>Foundations <span class="ref">&sect;1</span></h3>
+  <div class="seedbox">
+    <div class="seedname">Dynamical system $(X, T, \varphi_t)$</div>
+    <div class="seedbody">phase space $X$; time set $T \subseteq \R$ or $\Z$; evolution operators $\varphi_t : X \to X$ with
+      <b>(D1)</b> $\varphi_0 = \Id$ &nbsp;and&nbsp; <b>(D2)</b> $\varphi_t \circ \varphi_s = \varphi_{t+s}$</div>
+  </div>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Kinds of time</p>
+      <p><b>discrete:</b> $T \cong \N_0, \Z$ &mdash; iterated maps $g^k$; <b>continuous:</b> $T$ an interval &mdash; flows; <b>invertible:</b> $T$ a group, $\varphi_{-t} = \varphi_t^{-1}$.</p>
+      <p class="small">logistic map $px(1-x)$: inverse is two-valued $\Rightarrow$ not invertible</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Orbits &amp; invariant sets</p>
+      <p>$\Or(x_0) = \{\varphi_t(x_0) : t \in T\}$; periodic: $\varphi_{t+T_0}(x_0) = \varphi_t(x_0)$; the <b>phase portrait</b> is the decomposition of $X$ into orbits.</p>
+      <p>$S$ <b>invariant</b>: $\varphi_t(x_0) \in S$ for all $t$, all $x_0 \in S$ (<b>positively</b>/<b>negatively</b>: $t &gt; 0$ / $t &lt; 0$).</p>
+      <p><b>nullclines</b> of $x' = f(x)$: $\{x : f_k(x) = 0\}$ &mdash; organize the phase portrait.
+      <span class="small">van der Pol: $x' = y - \tfrac{x^3}{3} + x$, $y' = -px$: cubic + vertical line</span></p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Existence &amp; uniqueness</p>
+      <p>$f$ smooth $\Rightarrow$ $x' = f(x)$, $x(0) = x_0$ has a unique smooth solution on a maximal interval $(-t_1, t_2)$ &mdash; via Banach's fixed-point theorem (contraction on a complete metric space).</p>
+      <p class="small">maximal $\ne$ global: $x' = x^2$ blows up, $\varphi_t(x_0) = \frac{1}{1/x_0 - t}$ &mdash; only a <i>local</i> flow</p>
+    </div>
+  </div>
+</section>
 
 <section class="panel band-a" id="panel-a1">
   <h3>Stability of equilibria <span class="ref">&sect;2</span></h3>
@@ -68,7 +259,8 @@
     <div class="seg hue-e" style="grid-column:4; grid-row:1/2">
       <h4>Milnor attractor</h4>
     </div>
-    <div class="seg hue-e cont" style="grid-column:4; grid-row:3/4">
+    <div class="hjoint" style="grid-column:4; grid-row:2/3"></div>
+    <div class="seg hue-e" style="grid-column:4; grid-row:3/4">
       <div class="ex">$x'=-x^2$: basin $[0,\infty)$ yet unstable &mdash; row 1 skipped</div>
     </div>
     <div class="seg hue-a" style="grid-column:5; grid-row:1/5">
@@ -157,53 +349,6 @@
   <p class="note">$\lambda_{1,2} = a_{1,2} + i b_{1,2}$ eigenvalues of $Df(x^*)$; qualifiers: stable/unstable by $\operatorname{sign} a_j$.</p>
 </section>
 
-<section class="panel band-a" id="panel-a3">
-  <h3>The equivalence ladder <span class="ref">&sect;4</span></h3>
-  <div class="lattice" style="grid-template-columns: minmax(215px, 1.5fr) repeat(4, minmax(64px, 0.55fr));">
-    <div class="prop r0" style="grid-row:1">
-      <div class="pt"><b>1</b> $h$ homeomorphism mapping orbits to orbits</div>
-      <div class="pn">phase portraits agree as sets of curves</div>
-    </div>
-    <div class="prop" style="grid-row:2">
-      <div class="pt"><b>2</b> preserves direction of time</div>
-    </div>
-    <div class="prop" style="grid-row:3">
-      <div class="pt"><b>3</b> preserves time parametrization</div>
-      <div class="pf">$h \circ \varphi_t = \psi_t \circ h \quad \forall t$</div>
-      <div class="pn">maps: $f = h^{-1} \circ g \circ h$</div>
-    </div>
-    <div class="prop" style="grid-row:4">
-      <div class="pt"><b>4</b> $h, h^{-1} \in C^k$ (diffeomorphism)</div>
-      <div class="pn">flows: $f(x) = (Dh(x))^{-1} g(h(x))$</div>
-    </div>
-
-    <div class="seg hue-a" style="grid-column:2; grid-row:1/3">
-      <h4>topological equivalence</h4>
-      <div class="ex">preserves: equilibria, periodic orbits, stability</div>
-    </div>
-    <div class="seg hue-a" style="grid-column:3; grid-row:1/4">
-      <h4>topological conjugacy</h4>
-      <div class="ex">+ periods, entropy</div>
-      <div class="ex">Hartman&ndash;Grobman lands here (locally)</div>
-    </div>
-    <div class="seg hue-a" style="grid-column:4; grid-row:1/3">
-      <h4>$C^k$-equi&shy;valence</h4>
-    </div>
-    <div class="seg hue-a cont" style="grid-column:4; grid-row:4/5"><div class="ex">rows 1&ndash;2 + 4</div></div>
-    <div class="seg hue-a" style="grid-column:5; grid-row:1/5">
-      <h4>$C^k$-conjugacy</h4>
-      <div class="ex">+ eigenvalues / multipliers of linearization</div>
-    </div>
-  </div>
-  <div class="cards" style="margin-top:10px">
-    <div class="card ex">
-      <p class="hd">Conjugacy in action</p>
-      <p>tent map $\cong$ logistic map $4y(1-y)$ via $h(x) = \tfrac{1 - \cos \pi x}{2}$: &nbsp;$f \circ h = h \circ g$.</p>
-      <p class="small">to transport a system: $y = h(x) \Rightarrow y' = Dh(h^{-1}(y))\, f(h^{-1}(y))$</p>
-    </div>
-  </div>
-</section>
-
 </div>
 
 <div class="col">
@@ -221,6 +366,11 @@
     </div>
   </div>
   <div class="cards">
+    <div class="card def">
+      <p class="hd">Manifolds in 60 seconds <span class="tag">&sect;3</span></p>
+      <p>$d$-dim <b>topological manifold</b>: locally homeomorphic to $\R^d$ (second-countable, Hausdorff); <b>$C^k$-manifold</b>: atlas with $C^k$ chart transitions $h_\alpha \circ h_\beta^{-1}$. <b>Tangent space</b> $T_xM$: velocities $\left.\frac{d}{dt} f(\gamma(t))\right|_{t=0}$ of curves through $x$.</p>
+      <p class="small">every $d \le 3$ topological manifold is smoothable &mdash; false for $d \ge 4$; examples: $\R^d$, $\T^d = \R^d/\Z^d$, $S^d$</p>
+    </div>
     <div class="card def">
       <p class="hd">Invariant splitting</p>
       <p>$E^s = \{y : e^{tA}y \to 0,\ t \to +\infty\}$, &nbsp;$E^u$: $t \to -\infty$; &nbsp;$\R^d = E^s \oplus E^u$ with projections $P^s, P^u$.</p>
@@ -269,30 +419,50 @@
   </div>
 </section>
 
-<section class="panel band-e" id="panel-a4">
-  <h3>Flows &harr; maps <span class="ref">&sect;5</span></h3>
-  <div class="dict">
-    <div class="drow dhd"><div>continuous time $\varphi_t$</div><div>discrete time $g^k$</div></div>
-    <div class="drow"><div>equilibrium $f(x^*) = 0$</div><div>fixed point $g(x^*) = x^*$</div></div>
-    <div class="drow"><div>asympt. stable $\iff \operatorname{Re}\lambda_j &lt; 0$</div><div>$\iff |\mu_j| &lt; 1$</div></div>
-    <div class="drow"><div>periodic orbit $\Gamma$, period $T$</div><div>fixed point of Poincar&eacute; map $P$</div></div>
-    <div class="drow"><div>time-$T$ map $\varphi_T$</div><div>any diffeo, via suspension flow</div></div>
+<section class="panel band-a" id="panel-a3">
+  <h3>The equivalence ladder <span class="ref">&sect;4</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(215px, 1.5fr) repeat(4, minmax(64px, 0.55fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>1</b> $h$ homeomorphism mapping orbits to orbits</div>
+      <div class="pn">phase portraits agree as sets of curves</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>2</b> preserves direction of time</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>3</b> preserves time parametrization</div>
+      <div class="pf">$h \circ \varphi_t = \psi_t \circ h \quad \forall t$</div>
+      <div class="pn">maps: $f = h^{-1} \circ g \circ h$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>4</b> $h, h^{-1} \in C^k$ (diffeomorphism)</div>
+      <div class="pn">flows: $f(x) = (Dh(x))^{-1} g(h(x))$</div>
+    </div>
+
+    <div class="seg hue-a" style="grid-column:2; grid-row:1/3">
+      <h4>topological equivalence</h4>
+      <div class="ex">preserves: equilibria, periodic orbits, stability</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:3; grid-row:1/4">
+      <h4>topological conjugacy</h4>
+      <div class="ex">+ periods, entropy</div>
+      <div class="ex">Hartman&ndash;Grobman lands here (locally)</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:4; grid-row:1/3">
+      <h4>$C^k$-equi&shy;valence</h4>
+    </div>
+    <div class="hjoint" style="grid-column:4; grid-row:3/4"></div>
+    <div class="seg hue-a" style="grid-column:4; grid-row:4/5"><div class="ex">rows 1&ndash;2 + 4</div></div>
+    <div class="seg hue-a" style="grid-column:5; grid-row:1/5">
+      <h4>$C^k$-conjugacy</h4>
+      <div class="ex">+ eigenvalues / multipliers of linearization</div>
+    </div>
   </div>
   <div class="cards" style="margin-top:10px">
-    <div class="card def">
-      <p class="hd">Poincar&eacute; map <span class="tag">at $y \in \Gamma$</span></p>
-      <p>section $\Sigma = \{x : (x-y)\cdot f(y) = 0\}$ transverse to the flow. Implicit function theorem $\Rightarrow$ return time $\tau \in C^1$, $\tau(y) = T$, and</p>
-      <div class="dm">$P(x) = \varphi_{\tau(x)}(x) \in C^1(\Sigma \cap B(y;\delta))$</div>
-    </div>
-    <div class="card thm">
-      <p class="hd">Multipliers &amp; monodromy</p>
-      <p>multipliers $\mu_1, \dots, \mu_{d-1}$ = eigenvalues of $DP(0)$ &mdash; independent of the point on $\Gamma$, the section, and coordinates (local Poincar&eacute; maps are conjugate).</p>
-      <p>variational equation $u' = Df(\Gamma(t))\,u$; monodromy matrix $M(T)$ has eigenvalues $\{1, \mu_1, \dots, \mu_{d-1}\}$.</p>
-      <p>all $|\mu_j| &lt; 1 \Rightarrow \Gamma$ asymptotically stable.</p>
-    </div>
     <div class="card ex">
-      <p class="hd">Suspension &amp; obstruction</p>
-      <p>$g(x) = -\tfrac12 x$ is <i>not</i> a time-$T$ map of any flow on $\R$ (orientation). But every diffeo $g$ of $\R^d$ is the return map of a flow on the $(d{+}1)$-dim mapping torus $M = (\R^d \times [0,T])/\!\sim$, $(g(x),0)\sim(x,T)$.</p>
+      <p class="hd">Conjugacy in action</p>
+      <p>tent map $\cong$ logistic map $4y(1-y)$ via $h(x) = \tfrac{1 - \cos \pi x}{2}$: &nbsp;$f \circ h = h \circ g$.</p>
+      <p class="small">to transport a system: $y = h(x) \Rightarrow y' = Dh(h^{-1}(y))\, f(h^{-1}(y))$</p>
     </div>
   </div>
 </section>
@@ -329,6 +499,34 @@
 
 <div class="col">
 
+<section class="panel band-e" id="panel-a4">
+  <h3>Flows &harr; maps <span class="ref">&sect;5</span></h3>
+  <div class="dict">
+    <div class="drow dhd"><div>continuous time $\varphi_t$</div><div>discrete time $g^k$</div></div>
+    <div class="drow"><div>equilibrium $f(x^*) = 0$</div><div>fixed point $g(x^*) = x^*$</div></div>
+    <div class="drow"><div>asympt. stable $\iff \operatorname{Re}\lambda_j &lt; 0$</div><div>$\iff |\mu_j| &lt; 1$</div></div>
+    <div class="drow"><div>periodic orbit $\Gamma$, period $T$</div><div>fixed point of Poincar&eacute; map $P$</div></div>
+    <div class="drow"><div>time-$T$ map $\varphi_T$</div><div>any diffeo, via suspension flow</div></div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card def">
+      <p class="hd">Poincar&eacute; map <span class="tag">at $y \in \Gamma$</span></p>
+      <p>section $\Sigma = \{x : (x-y)\cdot f(y) = 0\}$ transverse to the flow. Implicit function theorem $\Rightarrow$ return time $\tau \in C^1$, $\tau(y) = T$, and</p>
+      <div class="dm">$P(x) = \varphi_{\tau(x)}(x) \in C^1(\Sigma \cap B(y;\delta))$</div>
+    </div>
+    <div class="card thm">
+      <p class="hd">Multipliers &amp; monodromy</p>
+      <p>multipliers $\mu_1, \dots, \mu_{d-1}$ = eigenvalues of $DP(0)$ &mdash; independent of the point on $\Gamma$, the section, and coordinates (local Poincar&eacute; maps are conjugate).</p>
+      <p>variational equation $u' = Df(\Gamma(t))\,u$; monodromy matrix $M(T)$ has eigenvalues $\{1, \mu_1, \dots, \mu_{d-1}\}$.</p>
+      <p>all $|\mu_j| &lt; 1 \Rightarrow \Gamma$ asymptotically stable.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Suspension &amp; obstruction</p>
+      <p>$g(x) = -\tfrac12 x$ is <i>not</i> a time-$T$ map of any flow on $\R$ (orientation). But every diffeo $g$ of $\R^d$ is the return map of a flow on the $(d{+}1)$-dim mapping torus $M = (\R^d \times [0,T])/\!\sim$, $(g(x),0)\sim(x,T)$.</p>
+    </div>
+  </div>
+</section>
+
 <section class="panel band-b" id="panel-b1">
   <h3>Structural stability <span class="ref">&sect;6</span></h3>
   <div class="cards">
@@ -361,51 +559,6 @@
       <p class="hd">Generic property</p>
       <p>holds on a <b>residual</b> set = countable intersection of open dense sets.</p>
       <p class="small">ex. hyperbolicity is generic in $\R^{d \times d}$</p>
-    </div>
-  </div>
-</section>
-
-<section class="panel band-c" id="panel-c2">
-  <h3>What is chaos? <span class="ref">&sect;15</span></h3>
-  <div class="lattice" style="grid-template-columns: minmax(190px, 1.6fr) repeat(5, minmax(54px, 0.5fr));">
-    <div class="prop r0" style="grid-row:1">
-      <div class="pt"><b>1</b> Sensitive dependence</div>
-      <div class="pf">$\exists r &gt; 0\ \forall \delta\ \exists y_0, T:$</div>
-      <div class="pf">$|x_0 - y_0| &lt; \delta,\ |\varphi_T(x_0) - \varphi_T(y_0)| \ge r$</div>
-    </div>
-    <div class="prop" style="grid-row:2">
-      <div class="pt"><b>2</b> Topological transitivity</div>
-      <div class="pn">some forward orbit is dense in $X$</div>
-    </div>
-    <div class="prop" style="grid-row:3">
-      <div class="pt"><b>3</b> Chaotic $:=$ 1 $\wedge$ 2</div>
-      <div class="pn">on an invariant set $S$</div>
-    </div>
-    <div class="prop" style="grid-row:4">
-      <div class="pt"><b>4</b> Positive Lyapunov exponent</div>
-      <div class="pf">$l_j(x_0) = \lim_k \tfrac1k \ln \lambda_j^{(k)}$</div>
-      <div class="pn">$\lambda_j^{(k)}$ singular values of $Dg^k_{x_0}$; Liouville: $\sum_j l_j = \ln|\det Dg|$ (if constant)</div>
-    </div>
-
-    <div class="seg hue-c" style="grid-column:2; grid-row:1/5">
-      <h4>doubling</h4>
-      <div class="ex">$2x \bmod 1$; $l = \ln 2$</div>
-    </div>
-    <div class="seg hue-c" style="grid-column:3; grid-row:1/5">
-      <h4>tent $\cong$ logistic</h4>
-      <div class="ex">$p{=}2$ / $p{=}4$: conjugate! $l = \ln 2$</div>
-    </div>
-    <div class="seg hue-c" style="grid-column:4; grid-row:1/4">
-      <h4>shift $\sigma$</h4>
-      <div class="ex">on $\Sigma_2$; universal model; row 4 n/a</div>
-    </div>
-    <div class="seg hue-c" style="grid-column:5; grid-row:1/5">
-      <h4>horse&shy;shoe</h4>
-      <div class="ex">$l_1 = \ln\mu$, $l_2 = \ln\lambda$</div>
-    </div>
-    <div class="seg hue-n" style="grid-column:6; grid-row:2/3">
-      <h4>rotation</h4>
-      <div class="ex">irrational: dense orbits, <i>no</i> sensitivity</div>
     </div>
   </div>
 </section>
@@ -467,7 +620,7 @@
 
   <div class="zoo">
     <div class="zrow zhead">
-      <div>eigenvalues</div><div>bifurcation</div><div>genericity conditions</div><div>topological normal form</div><div>what happens</div>
+      <div>$\lambda$ / $\mu$</div><div>bifurcation</div><div>genericity conditions</div><div>topological normal form</div><div>what happens</div>
     </div>
 
     <div class="zrow">
@@ -514,7 +667,7 @@
       <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-map"/><use href="#ev" x="38.3" y="15.7"/><use href="#ev" x="38.3" y="38.3"/></svg></div>
       <div><b>Neimark&ndash;Sacker</b><br><span class="small">maps &middot; codim 1</span></div>
       <div>complex pair of multipliers crosses the unit circle</div>
-      <div class="small">(normal form on $W^c$, rotation + cubic)</div>
+      <div class="small">on $W^c$: rotation + cubic terms; closed invariant curve of radius $\mathcal{O}(\sqrt{q})$</div>
       <div>closed <b>invariant curve</b> bifurcates<br><span class="small">H&eacute;non map $(x_1,x_2) \mapsto (x_2,\ p_1 - p_2 x_1 - x_2^2)$: NS, flip &amp; fold regions</span></div>
     </div>
 
@@ -616,7 +769,6 @@
     </div>
   </div>
 </section>
-
 <section class="panel band-c" id="panel-c4">
   <h3>Renormalization &amp; universality <span class="ref">&sect;17</span></h3>
   <div class="cards">
@@ -634,11 +786,74 @@
     </div>
   </div>
 </section>
+<section class="panel band-c" id="panel-symb">
+  <h3>Symbolic dynamics: the universal model <span class="ref">&sect;1, &sect;13, &sect;22</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Shift spaces</p>
+      <p>$\Sigma_k$ = bi-infinite sequences over $\{0, \dots, k{-}1\}$; shift $(\sigma \omega)_j = \omega_{j+1}$. Periodic orbits $=$ periodic sequences; a sequence containing every finite word has a dense orbit.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">One model, many systems</p>
+      <ul>
+        <li>horseshoe $g|_X \cong \sigma$ on $\Sigma_2$ (itineraries through $H_0, H_1$)</li>
+        <li>tent map $p{=}2$: semi-conjugate to $\Sigma_2^+$ via binary coding $H(s) = \sum_j s_j 2^{-(j+1)}$</li>
+        <li>Bernoulli measure $p$ on $\Sigma_k$ $\to$ the probabilistic model; entropy $-\sum p_j \ln p_j$</li>
+      </ul>
+      <p class="small">prove chaos once for $\sigma$, transport it along conjugacies</p>
+    </div>
+  </div>
+</section>
 </div>
 
 </div>
 
 <div class="col">
+
+<section class="panel band-c" id="panel-c2">
+  <h3>What is chaos? <span class="ref">&sect;15</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(190px, 1.6fr) repeat(5, minmax(54px, 0.5fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>1</b> Sensitive dependence</div>
+      <div class="pf">$\exists r &gt; 0\ \forall \delta\ \exists y_0, T:$</div>
+      <div class="pf">$|x_0 - y_0| &lt; \delta,\ |\varphi_T(x_0) - \varphi_T(y_0)| \ge r$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>2</b> Topological transitivity</div>
+      <div class="pn">some forward orbit is dense in $X$</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>3</b> Chaotic $:=$ 1 $\wedge$ 2</div>
+      <div class="pn">on an invariant set $S$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>4</b> Positive Lyapunov exponent</div>
+      <div class="pf">$l_j(x_0) = \lim_k \tfrac1k \ln \lambda_j^{(k)}$</div>
+      <div class="pn">$\lambda_j^{(k)}$ singular values of $Dg^k_{x_0}$; Liouville: $\sum_j l_j = \ln|\det Dg|$ (if constant)</div>
+    </div>
+
+    <div class="seg hue-c" style="grid-column:2; grid-row:1/5">
+      <h4>doubling</h4>
+      <div class="ex">$2x \bmod 1$; $l = \ln 2$</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:3; grid-row:1/5">
+      <h4>tent $\cong$ logistic</h4>
+      <div class="ex">$p{=}2$ / $p{=}4$: conjugate! $l = \ln 2$</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:4; grid-row:1/4">
+      <h4>shift $\sigma$</h4>
+      <div class="ex">on $\Sigma_2$; universal model; row 4 n/a</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:5; grid-row:1/5">
+      <h4>horse&shy;shoe</h4>
+      <div class="ex">$l_1 = \ln\mu$, $l_2 = \ln\lambda$</div>
+    </div>
+    <div class="seg hue-n" style="grid-column:6; grid-row:2/3">
+      <h4>rotation</h4>
+      <div class="ex">irrational: dense orbits, <i>no</i> sensitivity</div>
+    </div>
+  </div>
+</section>
 
 <section class="panel band-c" id="panel-c5">
   <h3>Attractors <span class="ref">&sect;18</span></h3>
@@ -680,7 +895,8 @@
     <div class="seg hue-d" style="grid-column:5; grid-row:1/4">
       <h4>hyperbolic attractor</h4>
     </div>
-    <div class="seg hue-d cont" style="grid-column:5; grid-row:5/6">
+    <div class="hjoint" style="grid-column:5; grid-row:4/5"></div>
+    <div class="seg hue-d" style="grid-column:5; grid-row:5/6">
       <div class="ex">Smale&ndash;Williams solenoid: locally Cantor $\times$ interval</div>
     </div>
   </div>
@@ -749,26 +965,6 @@
   </div>
 </section>
 
-<section class="panel band-c" id="panel-symb">
-  <h3>Symbolic dynamics: the universal model <span class="ref">&sect;1, &sect;13, &sect;22</span></h3>
-  <div class="cards">
-    <div class="card def">
-      <p class="hd">Shift spaces</p>
-      <p>$\Sigma_k$ = bi-infinite sequences over $\{0, \dots, k{-}1\}$; shift $(\sigma \omega)_j = \omega_{j+1}$. Periodic orbits $=$ periodic sequences; a sequence containing every finite word has a dense orbit.</p>
-    </div>
-    <div class="card ex">
-      <p class="hd">One model, many systems</p>
-      <ul>
-        <li>horseshoe $g|_X \cong \sigma$ on $\Sigma_2$ (itineraries through $H_0, H_1$)</li>
-        <li>tent map $p{=}2$: semi-conjugate to $\Sigma_2^+$ via binary coding $H(s) = \sum_j s_j 2^{-(j+1)}$</li>
-        <li>Bernoulli measure $p$ on $\Sigma_k$ $\to$ the probabilistic model; entropy $-\sum p_j \ln p_j$</li>
-      </ul>
-      <p class="small">prove chaos once for $\sigma$, transport it along conjugacies</p>
-    </div>
-  </div>
-</section>
-
-
 </div>
 
 <div class="col">
@@ -798,11 +994,11 @@
     </div>
 
     <div class="seg hue-n" style="grid-column:2; grid-row:1/2">
-      <h4>rotation $r \in \Q$</h4>
+      <h4>rotation<br>$r \in \Q$</h4>
       <div class="ex">Lebesgue invariant; not ergodic</div>
     </div>
     <div class="seg hue-d" style="grid-column:3; grid-row:1/3">
-      <h4>rotation $r \notin \Q$</h4>
+      <h4>rotation<br>$r \notin \Q$</h4>
       <div class="ex">ergodic (Fourier) but <b>not</b> weak mixing: pure point spectrum $e^{2\pi i n r}$</div>
     </div>
     <div class="seg hue-d" style="grid-column:4; grid-row:1/5">
@@ -893,6 +1089,13 @@
          <span class="swatch" style="background:var(--c-bg);border-color:var(--c-bd)"></span> chaos &nbsp;
          <span class="swatch" style="background:var(--d-bg);border-color:var(--d-bd)"></span> statistics &nbsp;
          <span class="swatch" style="background:var(--e-bg);border-color:var(--e-bd)"></span> examples &amp; bridges</p>
+    </div>
+    <div class="card warn">
+      <p class="hd">Two deviations from the notes <span class="tag">deliberate</span></p>
+      <ul>
+        <li>Lorenz parameters printed as $\sigma = 10$, $\rho = 28$ (standard); the notes state $\sigma = 28$, $\rho = 10$ &mdash; a typo given the equations' form.</li>
+        <li>Sharkovskii ordering printed in the standard form ending $\cdots \triangleleft 9 \triangleleft 7 \triangleleft 5 \triangleleft 3$; the notes' line reads &ldquo;$\cdots \triangleleft 3 \triangleleft 5 \triangleleft \cdots$&rdquo;, inconsistent with Li&ndash;Yorke.</li>
+      </ul>
     </div>
     <div class="card thm">
       <p class="hd">The three big bridges</p>

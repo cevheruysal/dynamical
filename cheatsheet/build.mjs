@@ -72,7 +72,7 @@ ${body}
 
 // ---- A3 variant: regroup the same panels into explicit pages ----
 const sections = {};
-for (const m of content.matchAll(/<section class="panel[^"]*" id="panel-([\w-]+)">[\s\S]*?<\/section>/g)) {
+for (const m of content.matchAll(/<section class="(?:panel|hero)[^"]*" id="panel-([\w-]+)">[\s\S]*?<\/section>/g)) {
   sections[m[1]] = m[0];
 }
 const defs = content.match(/<svg width="0"[\s\S]*?<\/svg>/)[0];
@@ -80,12 +80,13 @@ const masthead = content.match(/<header class="masthead">[\s\S]*?<\/header>/)[0]
 
 // each page: array of columns; a single-element page = full-width column
 const A3_PAGES = [
-  [['a1', 'a3'], ['a1b']],
-  [['a2'], ['a4', 'b2']],
+  [['a0', 'a1'], ['a1b']],
+  [['hero']], // the dynamical hierarchy, full width
+  [['a2'], ['a3', 'a4']],
   [['b3']], // bifurcation zoo, full width
-  [['b1', 'c2'], ['c1', 'c4']],
-  [['b4', 'c3']], // normal forms + 1D maps, full width
-  [['c5'], ['c6', 'symb']],
+  [['b1', 'b2'], ['c1', 'symb']],
+  [['b4', 'c3', 'c4']], // normal forms + 1D maps + renormalization, full width
+  [['c5'], ['c2', 'c6']],
   [['c7'], ['c8', 'legend']],
 ];
 
