@@ -1,0 +1,1114 @@
+<div class="sheet">
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- eigenvalue-plane frames -->
+    <g id="fr-flow">
+      <line x1="27" y1="3" x2="27" y2="51" stroke="#9c9cb0" stroke-width="1.6"/>
+      <line x1="3" y1="27" x2="51" y2="27" stroke="#c9c9d6" stroke-width="1"/>
+    </g>
+    <g id="fr-map">
+      <line x1="27" y1="3" x2="27" y2="51" stroke="#c9c9d6" stroke-width="1"/>
+      <line x1="3" y1="27" x2="51" y2="27" stroke="#c9c9d6" stroke-width="1"/>
+      <circle cx="27" cy="27" r="16" fill="none" stroke="#9c9cb0" stroke-width="1.6"/>
+    </g>
+    <!-- eigenvalue cross -->
+    <g id="ev">
+      <line x1="-4" y1="-4" x2="4" y2="4" stroke="#c23d3d" stroke-width="2.4"/>
+      <line x1="-4" y1="4" x2="4" y2="-4" stroke="#c23d3d" stroke-width="2.4"/>
+    </g>
+  </defs>
+</svg>
+
+<header class="masthead">
+  <h1>Dynamical Systems</h1>
+  <div class="sub">a structural cheatsheet &middot; after C.&thinsp;K&uuml;hn, <i>Foundations of Applied Dynamical Systems</i> (TUM)</div>
+  <div class="coursemap"><b>Local</b><span class="sep">&rarr;</span><b>Equivalence</b><span class="sep">&rarr;</span><b>Robustness</b><span class="sep">&rarr;</span><b>Bifurcations</b><span class="sep">&rarr;</span><b>Chaos</b><span class="sep">&rarr;</span><b>Statistics</b></div>
+</header>
+
+<!-- ================================================== hero : the dynamical hierarchy -->
+<section class="hero" id="panel-hero">
+  <div class="hero-head">
+    <h2>The dynamical hierarchy</h2>
+    <div class="hero-sub">an invariant object $S$ of a dynamical system $(X, T, \varphi_t)$ &mdash; each column spans exactly the properties established for it; a gap is a genuine <i>no</i> (or beyond the notes)</div>
+  </div>
+  <div class="hlattice">
+    <!-- ===== property spine (grid column 6) ===== -->
+    <div class="hgroup hue-n" style="grid-row:1/3"><span>geometry</span></div>
+    <div class="hgroup hue-a" style="grid-row:3/5"><span>stability</span></div>
+    <div class="hgroup hue-b" style="grid-row:5/7"><span>robustness</span></div>
+    <div class="hgroup hue-c" style="grid-row:7/10"><span>chaos</span></div>
+    <div class="hgroup hue-d" style="grid-row:10/13"><span>statistics</span></div>
+
+    <div class="hprop hr0" style="grid-row:1">
+      <div class="hpt"><b>0</b> Invariant</div>
+      <div class="hpf">$\varphi_t(S) \subseteq S \quad \forall t$</div>
+    </div>
+    <div class="hprop" style="grid-row:2">
+      <div class="hpt"><b>1</b> A single point or periodic orbit</div>
+      <div class="hpf">$\varphi_t(x^*) = x^*$ &nbsp;or&nbsp; $\varphi_{t+T_0} = \varphi_t$ on $S$</div>
+    </div>
+    <div class="hprop" style="grid-row:3">
+      <div class="hpt"><b>2</b> Lyapunov stable</div>
+      <div class="hpf">$\forall U \,\exists V\!: \varphi_t(V) \subseteq U \;\;\forall t \ge 0$</div>
+    </div>
+    <div class="hprop" style="grid-row:4">
+      <div class="hpt"><b>3</b> Attracts a neighborhood</div>
+      <div class="hpf">$\omega(x_0) \subset S \quad \forall x_0 \in U$</div>
+    </div>
+    <div class="hprop" style="grid-row:5">
+      <div class="hpt"><b>4</b> Uniformly hyperbolic</div>
+      <div class="hpf">$T_x M = E^s(x) \oplus E^u(x)$</div>
+    </div>
+    <div class="hprop" style="grid-row:6">
+      <div class="hpt"><b>5</b> Persistent (locally structurally stable)</div>
+      <div class="hpf">survives $C^1$-small perturbations</div>
+    </div>
+    <div class="hprop" style="grid-row:7">
+      <div class="hpt"><b>6</b> Topologically transitive</div>
+      <div class="hpf">some orbit is dense in $S$</div>
+    </div>
+    <div class="hprop" style="grid-row:8">
+      <div class="hpt"><b>7</b> Sensitive dependence</div>
+      <div class="hpf">$|x_0 - y_0| < \delta,\ |\varphi_T(x_0) - \varphi_T(y_0)| \ge r$</div>
+    </div>
+    <div class="hprop" style="grid-row:9">
+      <div class="hpt"><b>8</b> Chaotic</div>
+      <div class="hpf">$:= \mathbf{6} \wedge \mathbf{7}$</div>
+    </div>
+    <div class="hprop" style="grid-row:10">
+      <div class="hpt"><b>9</b> Ergodic invariant measure</div>
+      <div class="hpf">$g^{-1}(A) = A \Rightarrow \mu(A) \in \{0,1\}$</div>
+    </div>
+    <div class="hprop" style="grid-row:11">
+      <div class="hpt"><b>10</b> Mixing</div>
+      <div class="hpf">$\mu(g^{-n}A \cap B) \to \mu(A)\,\mu(B)$</div>
+    </div>
+    <div class="hprop" style="grid-row:12">
+      <div class="hpt"><b>11</b> Positive entropy</div>
+      <div class="hpf">$h(g) > 0$</div>
+    </div>
+
+    <!-- ===== left columns: point-like objects ===== -->
+    <div class="hcol hue-a" style="grid-column:1; grid-row:1/7">
+      <h4>stable node / focus</h4>
+      <div class="ex">all $\operatorname{Re}\lambda_j < 0$ (maps: $|\mu_j| < 1$); hyperbolic, hence persistent</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:2; grid-row:1/5">
+      <h4>center</h4>
+      <div class="ex">$\ddot x + x = 0$: stable, <i>not</i> attracting, destroyed by perturbation</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:3; grid-row:1/3">
+      <h4>saddle</h4>
+      <div class="ex">unstable&mdash;</div>
+    </div>
+    <div class="hjoint" style="grid-column:3; grid-row:3/5"></div>
+    <div class="hcol hue-a" style="grid-column:3; grid-row:5/7">
+      <div class="ex">&mdash;yet hyperbolic and persistent</div>
+    </div>
+    <div class="hcol hue-a" style="grid-column:4; grid-row:1/7">
+      <h4>stable periodic orbit</h4>
+      <div class="ex">multipliers $|\mu_j| < 1$ of the Poincar&eacute; map</div>
+    </div>
+    <div class="hcol hue-e" style="grid-column:5; grid-row:1/2">
+      <h4>orbit closures, $\omega$-limits</h4>
+      <div class="ex">the raw material</div>
+    </div>
+
+    <!-- ===== right columns: set-like systems ===== -->
+    <div class="hcol hue-d" style="grid-column:7; grid-row:1/2">
+      <h4>irrational rotation</h4>
+      <div class="ex">$x + r \bmod 1$</div>
+    </div>
+    <div class="hjoint" style="grid-column:7; grid-row:2/7"></div>
+    <div class="hcol hue-d" style="grid-column:7; grid-row:7/8">
+      <div class="ex">all orbits dense</div>
+    </div>
+    <div class="hjoint" style="grid-column:7; grid-row:8/10"></div>
+    <div class="hcol hue-d" style="grid-column:7; grid-row:10/11">
+      <div class="ex">ergodic $\iff r \notin \Q$; isometry: no sensitivity; pure point spectrum $\Rightarrow$ never mixing</div>
+    </div>
+
+    <div class="hcol hue-c" style="grid-column:8; grid-row:1/2">
+      <h4>doubling &middot; tent &middot; logistic-4</h4>
+    </div>
+    <div class="hjoint" style="grid-column:8; grid-row:2/7"></div>
+    <div class="hcol hue-c" style="grid-column:8; grid-row:7/12">
+      <div class="ex">chaotic on $[0,1]$; $l = \ln 2$; expanding $\Rightarrow$ mixing $\Rightarrow$ ergodic (Lebesgue)</div>
+    </div>
+
+    <div class="hcol hue-b" style="grid-column:9; grid-row:1/2">
+      <h4>cat map</h4>
+      <div class="ex">$A = \left(\begin{smallmatrix} 2 & 1 \\ 1 & 1 \end{smallmatrix}\right)$ on $\T^2$</div>
+    </div>
+    <div class="hjoint" style="grid-column:9; grid-row:2/5"></div>
+    <div class="hcol hue-b" style="grid-column:9; grid-row:5/7">
+      <div class="ex">Anosov: $\Lambda = \T^2$; open in $C^1$, structurally stable</div>
+    </div>
+
+    <div class="hcol hue-c" style="grid-column:10; grid-row:1/2">
+      <h4>horseshoe $X$</h4>
+    </div>
+    <div class="hjoint" style="grid-column:10; grid-row:2/5"></div>
+    <div class="hcol hue-c" style="grid-column:10; grid-row:5/10">
+      <div class="ex">$\cong$ shift on $\Sigma_2$; hyperbolic, so chaos <i>persists</i>; skips stability entirely</div>
+    </div>
+
+    <div class="hcol hue-d" style="grid-column:11; grid-row:1/2">
+      <h4>solenoid</h4>
+    </div>
+    <div class="hjoint" style="grid-column:11; grid-row:2/4"></div>
+    <div class="hcol hue-d" style="grid-column:11; grid-row:4/7">
+      <div class="ex">hyperbolic attractor; locally Cantor $\times$ interval</div>
+    </div>
+
+    <div class="hcol hue-e" style="grid-column:12; grid-row:1/2">
+      <h4>Lorenz attractor</h4>
+    </div>
+    <div class="hjoint" style="grid-column:12; grid-row:2/4"></div>
+    <div class="hcol hue-e" style="grid-column:12; grid-row:4/5">
+      <div class="ex">trapping ellipsoid; volume 0</div>
+    </div>
+    <div class="hjoint" style="grid-column:12; grid-row:5/9"></div>
+    <div class="hcol hue-e" style="grid-column:12; grid-row:9/10">
+      <div class="ex">strange: chaotic&#8224; but <i>not</i> hyperbolic &mdash; the gap at row 4 <i>is</i> the definition</div>
+    </div>
+
+    <div class="hcol hue-d" style="grid-column:13; grid-row:1/2">
+      <h4>Bernoulli shift</h4>
+      <div class="ex">$(\Sigma_k, \sigma, p)$</div>
+    </div>
+    <div class="hjoint" style="grid-column:13; grid-row:2/7"></div>
+    <div class="hcol hue-d" style="grid-column:13; grid-row:7/13">
+      <div class="ex">mixing&#8224; on cylinders; $h = -\sum p_j \ln p_j > 0$ &mdash; reaches the very bottom</div>
+    </div>
+    <div class="hnote" style="grid-column:1/6; grid-row:8/13">
+      <p><b>How to read this.</b> Each column is one object of the course; it spans exactly the numbered properties it has. A longer column is a stronger object; a gap is a genuine <i>no</i> (the saddle is never stable, the Lorenz attractor is never hyperbolic). The left-to-right staircase &mdash; from equilibria to Bernoulli shifts &mdash; is the arc of the course.</p>
+      <p class="small">&#8224; standard facts completing the picture &mdash; the notes prove chaos for horseshoe and interval maps, mixing for expanding maps, entropy for Bernoulli shifts.</p>
+    </div>
+  </div>
+</section>
+
+<div class="cols">
+
+<div class="col">
+
+<section class="panel band-a" id="panel-a0">
+  <h3>Foundations <span class="ref">&sect;1</span></h3>
+  <div class="seedbox">
+    <div class="seedname">Dynamical system $(X, T, \varphi_t)$</div>
+    <div class="seedbody">phase space $X$; time set $T \subseteq \R$ or $\Z$; evolution operators $\varphi_t : X \to X$ with
+      <b>(D1)</b> $\varphi_0 = \Id$ &nbsp;and&nbsp; <b>(D2)</b> $\varphi_t \circ \varphi_s = \varphi_{t+s}$</div>
+  </div>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Kinds of time</p>
+      <p><b>discrete:</b> $T \cong \N_0, \Z$ &mdash; iterated maps $g^k$; <b>continuous:</b> $T$ an interval &mdash; flows; <b>invertible:</b> $T$ a group, $\varphi_{-t} = \varphi_t^{-1}$.</p>
+      <p class="small">logistic map $px(1-x)$: inverse is two-valued $\Rightarrow$ not invertible</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Orbits &amp; invariant sets</p>
+      <p>$\Or(x_0) = \{\varphi_t(x_0) : t \in T\}$; periodic: $\varphi_{t+T_0}(x_0) = \varphi_t(x_0)$; the <b>phase portrait</b> is the decomposition of $X$ into orbits.</p>
+      <p>$S$ <b>invariant</b>: $\varphi_t(x_0) \in S$ for all $t$, all $x_0 \in S$ (<b>positively</b>/<b>negatively</b>: $t &gt; 0$ / $t &lt; 0$).</p>
+      <p><b>nullclines</b> of $x' = f(x)$: $\{x : f_k(x) = 0\}$ &mdash; organize the phase portrait.
+      <span class="small">van der Pol: $x' = y - \tfrac{x^3}{3} + x$, $y' = -px$: cubic + vertical line</span></p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Existence &amp; uniqueness</p>
+      <p>$f$ smooth $\Rightarrow$ $x' = f(x)$, $x(0) = x_0$ has a unique smooth solution on a maximal interval $(-t_1, t_2)$ &mdash; via Banach's fixed-point theorem (contraction on a complete metric space).</p>
+      <p class="small">maximal $\ne$ global: $x' = x^2$ blows up, $\varphi_t(x_0) = \frac{1}{1/x_0 - t}$ &mdash; only a <i>local</i> flow</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-a" id="panel-a1">
+  <h3>Stability of equilibria <span class="ref">&sect;2</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(205px, 1.4fr) repeat(5, minmax(56px, 0.52fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>0</b> Equilibrium (fixed point)</div>
+      <div class="pf">$\varphi_t(x^*) = x^* \quad \forall t \in T$</div>
+      <div class="pn">ODE: $f(x^*)=0$; map: $g(x^*)=x^*$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>1</b> Lyapunov stable</div>
+      <div class="pf">$\forall U \; \exists V \subseteq U : \; \varphi_t(V) \subseteq U \;\; \forall t \ge 0$</div>
+      <div class="pn">nearby orbits stay nearby</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>2</b> Attracts a positive-measure set</div>
+      <div class="pf">$\mu\!\left(B(x^*)\right) > 0$</div>
+      <div class="pn">basin $B(A) := \{x_0 : \omega(x_0) \subset A\}$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>3</b> Attracts a whole neighborhood</div>
+      <div class="pf">$\varphi_t(x_0) \xrightarrow{\,t \to +\infty\,} x^* \;\; \forall x_0 \in U$</div>
+    </div>
+    <div class="prop" style="grid-row:5">
+      <div class="pt"><b>4</b> Basin is the whole space</div>
+      <div class="pf">$U = X$</div>
+    </div>
+
+    <div class="seg hue-n" style="grid-column:2; grid-row:1/2">
+      <h4>equi&shy;librium</h4>
+      <div class="ex">saddle, unstable node; $x'=x$ at $0$</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:3; grid-row:1/3">
+      <h4>stable</h4>
+      <div class="ex">center $\ddot x + x = 0$: stable, <i>not</i> asympt. stable</div>
+    </div>
+    <div class="seg hue-e" style="grid-column:4; grid-row:1/2">
+      <h4>Milnor attractor</h4>
+    </div>
+    <div class="hjoint" style="grid-column:4; grid-row:2/3"></div>
+    <div class="seg hue-e" style="grid-column:4; grid-row:3/4">
+      <div class="ex">$x'=-x^2$: basin $[0,\infty)$ yet unstable &mdash; row 1 skipped</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:5; grid-row:1/5">
+      <h4>asympt. stable</h4>
+      <div class="ex">stable node&thinsp;/&thinsp;focus</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:6; grid-row:1/6">
+      <h4>globally asympt. stable</h4>
+      <div class="ex">$x'=-x$ on $\R$</div>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-a" id="panel-a1b">
+  <h3>Stability certificates <span class="ref">&sect;2</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Lyapunov function <span class="tag">on $U \ni x^*$</span></p>
+      <ul>
+        <li>(D1) $L$ continuous</li>
+        <li>(D2) $L(x^*) = 0$, &nbsp;$L(x) > 0$ for $x \neq x^*$</li>
+        <li>(D3) nonincreasing along orbits: $t_0 < t_1 \Rightarrow L(\varphi_{t_0}(x_0)) \ge L(\varphi_{t_1}(x_0))$ &nbsp;(<i>strict</i>: never $=$)</li>
+      </ul>
+      <p class="small">differentiable case: $\frac{d}{dt} L(\varphi_t(x)) = \nabla L \cdot f \le 0$ (Lie derivative)</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Lyapunov criterion &nbsp;&amp;&nbsp; LaSalle</p>
+      <p>$\exists$ Lyapunov function $\Rightarrow$ <b>stable</b> <span class="small">(sublevel sets $S_\varepsilon$ are positively invariant)</span></p>
+      <p>$L$ not constant on any nontrivial orbit $\Rightarrow$ <b>asymptotically stable</b> <span class="small">($L$ is constant on $\omega(x)$, so $\omega(x) = \{x^*\}$)</span></p>
+    </div>
+    <div class="card def">
+      <p class="hd">$\omega$-/$\alpha$-limit sets</p>
+      <p>$\omega(x) = \{y : \exists t_j \to +\infty,\ \varphi_{t_j}(x) \to y\}$, &nbsp;$\alpha(x)$: $t_j \to -\infty$</p>
+    </div>
+    <div class="card def">
+      <p class="hd">First integral <span class="tag">constant of motion</span></p>
+      <p>$\nabla g \cdot f \equiv 0$. &nbsp;Hamiltonian: $x' = \partial_y H$, $y' = -\partial_x H$ has $H = \tfrac12 |y|^2 + V(x)$ as first integral (not a Lyapunov function in general).</p>
+      <p class="small">harmonic oscillator: $L = x^2 + y^2$ is both</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Linear(ized) stability</p>
+      <p>$x' = Ax$: all $\operatorname{Re}\lambda_j < 0 \Rightarrow$ asympt. stable; some $\operatorname{Re}\lambda_j > 0 \Rightarrow$ unstable.</p>
+      <p>maps $x_{k+1} = Ax_k$: multipliers $|\mu_j| < 1 \Rightarrow$ asympt. stable.</p>
+      <p class="small">$\operatorname{Re}\lambda_j = 0$ cases undecided by linearization $\to$ center manifold</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Worked example: 1D bifurcation analysis <span class="tag">exam pattern</span></p>
+      <p>$x' = f(x,p) = px + 2x^2 - x^3 = x\,(p + 2x - x^2)$</p>
+      <ul>
+        <li><b>steady states:</b> $x = 0$ and $x_\pm = 1 \pm \sqrt{1 + p}$ (exist for $p \ge -1$)</li>
+        <li><b>linear stability:</b> $\partial_x f = p + 4x - 3x^2$; at $x = 0$: $\lambda = p$ &mdash; stable $p &lt; 0$, unstable $p &gt; 0$</li>
+        <li><b>fold</b> at $(x,p) = (1,-1)$: $f = 0$, $\partial_x f = 0$, $\partial_{xx} f = -2 \neq 0$, $\partial_p f = 1 \neq 0$ &nbsp;&check;</li>
+        <li><b>transcritical</b> at $(0,0)$: $x_-$ crosses $0$, stability is exchanged</li>
+        <li>sketch: branches $x = 0$ and the parabola $p = x^2 - 2x$ in the $(p,x)$-plane, solid = stable, dashed = unstable</li>
+      </ul>
+    </div>
+  </div>
+  <div class="portraits">
+    <figure><svg viewBox="0 0 54 54" class="pp">
+      <line x1="6" y1="6" x2="23" y2="23" stroke="#7b4bb5" stroke-width="1.7" marker-end="url(#no)"/>
+      <line x1="48" y1="6" x2="31" y2="23" stroke="#7b4bb5" stroke-width="1.7"/>
+      <line x1="6" y1="48" x2="23" y2="31" stroke="#7b4bb5" stroke-width="1.7"/>
+      <line x1="48" y1="48" x2="31" y2="31" stroke="#7b4bb5" stroke-width="1.7"/>
+      <line x1="27" y1="4" x2="27" y2="21" stroke="#7b4bb5" stroke-width="1.7"/>
+      <line x1="27" y1="50" x2="27" y2="33" stroke="#7b4bb5" stroke-width="1.7"/>
+      <circle cx="27" cy="27" r="2.4" fill="#1c1c26"/>
+    </svg><figcaption><b>node</b> $b_j = 0$, $a_1 a_2 > 0$</figcaption></figure>
+    <figure><svg viewBox="0 0 54 54" class="pp">
+      <path d="M6,4 C22,20 22,34 6,50" fill="none" stroke="#7b4bb5" stroke-width="1.7"/>
+      <path d="M48,4 C32,20 32,34 48,50" fill="none" stroke="#7b4bb5" stroke-width="1.7"/>
+      <line x1="4" y1="27" x2="50" y2="27" stroke="#b9a5d6" stroke-width="1.2"/>
+      <line x1="27" y1="4" x2="27" y2="50" stroke="#b9a5d6" stroke-width="1.2"/>
+      <circle cx="27" cy="27" r="2.4" fill="#1c1c26"/>
+    </svg><figcaption><b>saddle</b> $b_j = 0$, $a_1 a_2 < 0$</figcaption></figure>
+    <figure><svg viewBox="0 0 54 54" class="pp">
+      <path d="M49,27 A22,22 0 1,0 27,49 A16,16 0 1,0 11,27 A10,10 0 1,0 27,37 A5,5 0 1,0 22,27"
+            fill="none" stroke="#7b4bb5" stroke-width="1.7"/>
+      <circle cx="27" cy="27" r="2.4" fill="#1c1c26"/>
+    </svg><figcaption><b>focus</b> $b_1 \neq 0$, $a_1 \neq 0$</figcaption></figure>
+    <figure><svg viewBox="0 0 54 54" class="pp">
+      <ellipse cx="27" cy="27" rx="19" ry="13" fill="none" stroke="#7b4bb5" stroke-width="1.7"/>
+      <ellipse cx="27" cy="27" rx="10" ry="6.5" fill="none" stroke="#7b4bb5" stroke-width="1.7"/>
+      <circle cx="27" cy="27" r="2.4" fill="#1c1c26"/>
+    </svg><figcaption><b>center</b> $a_j = 0$, $b_1 \neq 0$</figcaption></figure>
+  </div>
+  <p class="note">$\lambda_{1,2} = a_{1,2} + i b_{1,2}$ eigenvalues of $Df(x^*)$; qualifiers: stable/unstable by $\operatorname{sign} a_j$.</p>
+</section>
+
+</div>
+
+<div class="col">
+
+<section class="panel band-a" id="panel-a2">
+  <h3>Hyperbolicity &amp; invariant manifolds <span class="ref">&sect;3, &sect;10</span></h3>
+  <div class="hypdef">
+    <div class="hcell">
+      <svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="14" y="14"/><use href="#ev" x="14" y="40"/><use href="#ev" x="42" y="27"/></svg>
+      <div><b>flows:</b> $x^*$ hyperbolic $\iff$ $Df(x^*)$ has no eigenvalue with $\operatorname{Re}\lambda = 0$</div>
+    </div>
+    <div class="hcell">
+      <svg viewBox="0 0 54 54" class="eig"><use href="#fr-map"/><use href="#ev" x="20" y="19"/><use href="#ev" x="20" y="35"/><use href="#ev" x="49" y="27"/></svg>
+      <div><b>maps:</b> $x^*$ hyperbolic $\iff$ all multipliers $|\mu| \neq 1$ of $Dg(x^*)$</div>
+    </div>
+  </div>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Manifolds in 60 seconds <span class="tag">&sect;3</span></p>
+      <p>$d$-dim <b>topological manifold</b>: locally homeomorphic to $\R^d$ (second-countable, Hausdorff); <b>$C^k$-manifold</b>: atlas with $C^k$ chart transitions $h_\alpha \circ h_\beta^{-1}$. <b>Tangent space</b> $T_xM$: velocities $\left.\frac{d}{dt} f(\gamma(t))\right|_{t=0}$ of curves through $x$.</p>
+      <p class="small">every $d \le 3$ topological manifold is smoothable &mdash; false for $d \ge 4$; examples: $\R^d$, $\T^d = \R^d/\Z^d$, $S^d$</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Invariant splitting</p>
+      <p>$E^s = \{y : e^{tA}y \to 0,\ t \to +\infty\}$, &nbsp;$E^u$: $t \to -\infty$; &nbsp;$\R^d = E^s \oplus E^u$ with projections $P^s, P^u$.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Stable/unstable manifold theorem <span class="tag">flows &amp; diffeos, $f \in C^k$</span></p>
+      <div class="dm">$W^s_\loc(x^*) = \{y \in U : \varphi_t(y) \in U \ \forall t \ge 0,\ \varphi_t(y) \to x^*\}$</div>
+      <p>$W^{s/u}_\loc$ are $C^k$ manifolds, <b>tangent to $E^{s/u}$</b> at $x^*$; globalize by $W^{s/u} = \bigcup_t \varphi_t(W^{s/u}_\loc)$.</p>
+      <p class="small">constructions: Lyapunov&ndash;Perron (variation of constants + contraction) or Hadamard graph transform; maps: $W^s_\loc = \{y: g^k(y) \to x^*\}$</p>
+      <p class="small">ex. Duffing $\ddot x = x - px^3$: saddle at $0$, $\dim E^s = \dim E^u = 1$; Arnold cat map on $\T^2$: every point hyperbolic</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Hartman&ndash;Grobman</p>
+      <p>$x^*$ hyperbolic $\Rightarrow$ $\varphi_t$ is <b>locally topologically conjugate</b> to the linearization $e^{tA}$, $A = Df(x^*)$. Maps: $h \circ A = g \circ h$, $h = \Id + H$ unique via Banach fixed point.</p>
+      <p class="small">$\Rightarrow$ near hyperbolic points, the linear picture is the whole local picture (up to homeomorphism &mdash; see equivalence ladder)</p>
+    </div>
+  </div>
+
+  <h3 class="subhead">Non-hyperbolic? &mdash; center manifolds</h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Spectral split</p>
+      <p>$d_c$ eigenvalues $\operatorname{Re}\lambda = 0$, $d_s$ with $\operatorname{Re}\lambda < 0$, $d_u$ with $\operatorname{Re}\lambda > 0$; $E^c = $ span of critical eigenvectors.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Center manifold theorem <span class="tag">$f \in C^k$</span></p>
+      <p>$\exists$ local $C^k$, $d_c$-dim invariant manifold $W^c_\loc(0)$ tangent to $E^c$; solutions staying near $0$ for $t \to \pm\infty$ lie on it.</p>
+      <p class="small"><b>caveats:</b> not unique, possibly not analytic/not $C^\infty$ &mdash; e.g. $x' = x^2,\ y' = -y$ has the family $y = p\,e^{1/x}$ $(x<0)$</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Reduction theorem</p>
+      <p>With blocks $x' = Bx + F(x,y)$, $y' = Cy + G(x,y)$ ($x \in \R^{d_c}$): locally topologically equivalent to</p>
+      <div class="dm">$x' = Bx + F(x, H(x)), \qquad y' = Cy$</div>
+      <p>where $W^c_\loc = \operatorname{graph} H$, $H = \mathcal{O}(x^2)$.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Recipe: computing $W^c$ <span class="tag">exam workhorse</span></p>
+      <ul>
+        <li>shift equilibrium to $0$, split into $(B, C)$ blocks (diagonalize)</li>
+        <li>ansatz $y = h(x) = a_2 x^2 + a_3 x^3 + \dots$</li>
+        <li>invariance equation $\;\mathcal{N}(h) = Dh(x)\,[Bx + F(x,h)] - Ch - G(x,h) = 0$</li>
+        <li>match coefficients; approximation thm: $\mathcal{N}(h) = \mathcal{O}(|x|^p) \Rightarrow H = h + \mathcal{O}(|x|^p)$</li>
+      </ul>
+      <p>ex. $x' = xy,\ y' = -y + px^2$: $a_2 = p$, $W^c: y = px^2 + \mathcal{O}(x^4)$, reduced flow $x' = px^3 + \mathcal{O}(x^5)$.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-a" id="panel-a3">
+  <h3>The equivalence ladder <span class="ref">&sect;4</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(215px, 1.5fr) repeat(4, minmax(64px, 0.55fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>1</b> $h$ homeomorphism mapping orbits to orbits</div>
+      <div class="pn">phase portraits agree as sets of curves</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>2</b> preserves direction of time</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>3</b> preserves time parametrization</div>
+      <div class="pf">$h \circ \varphi_t = \psi_t \circ h \quad \forall t$</div>
+      <div class="pn">maps: $f = h^{-1} \circ g \circ h$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>4</b> $h, h^{-1} \in C^k$ (diffeomorphism)</div>
+      <div class="pn">flows: $f(x) = (Dh(x))^{-1} g(h(x))$</div>
+    </div>
+
+    <div class="seg hue-a" style="grid-column:2; grid-row:1/3">
+      <h4>topological equivalence</h4>
+      <div class="ex">preserves: equilibria, periodic orbits, stability</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:3; grid-row:1/4">
+      <h4>topological conjugacy</h4>
+      <div class="ex">+ periods, entropy</div>
+      <div class="ex">Hartman&ndash;Grobman lands here (locally)</div>
+    </div>
+    <div class="seg hue-a" style="grid-column:4; grid-row:1/3">
+      <h4>$C^k$-equi&shy;valence</h4>
+    </div>
+    <div class="hjoint" style="grid-column:4; grid-row:3/4"></div>
+    <div class="seg hue-a" style="grid-column:4; grid-row:4/5"><div class="ex">rows 1&ndash;2 + 4</div></div>
+    <div class="seg hue-a" style="grid-column:5; grid-row:1/5">
+      <h4>$C^k$-conjugacy</h4>
+      <div class="ex">+ eigenvalues / multipliers of linearization</div>
+    </div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card ex">
+      <p class="hd">Conjugacy in action</p>
+      <p>tent map $\cong$ logistic map $4y(1-y)$ via $h(x) = \tfrac{1 - \cos \pi x}{2}$: &nbsp;$f \circ h = h \circ g$.</p>
+      <p class="small">to transport a system: $y = h(x) \Rightarrow y' = Dh(h^{-1}(y))\, f(h^{-1}(y))$</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-b" id="panel-b2">
+  <h3>Hyperbolic sets <span class="ref">&sect;7</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Hyperbolic set <span class="tag">$g \in C^1$ diffeo, $\Lambda$ compact invariant</span></p>
+      <p>$\exists\, C > 0$, $\lambda \in (0,1)$ and subspaces $E^s(x), E^u(x) \subset T_x M$:</p>
+      <ul>
+        <li>(D1) invariance: $Dg_x E^{s/u}(x) = E^{s/u}(g(x))$</li>
+        <li>(D2) $|Dg^j_x v| \le C\lambda^j |v|$ on $E^s$, $j \ge 0$</li>
+        <li>(D3) $|Dg^{-j}_x v| \le C\lambda^j |v|$ on $E^u$</li>
+        <li>(D4) splitting: $T_x M = E^s(x) \oplus E^u(x)$</li>
+      </ul>
+      <p><b>Anosov diffeomorphism:</b> $\Lambda = M$. &nbsp;ex. cat map $A = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 1 \end{pmatrix}$ on $\T^2$.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Shadowing</p>
+      <p>$\delta$-pseudo-orbit: $d(g(x_k), x_{k+1}) \le \delta$. Near a hyperbolic $\Lambda$: $\forall \varepsilon\ \exists \delta$ such that every $\delta$-pseudo-orbit is <b>$\varepsilon$-shadowed</b> by a true orbit.</p>
+      <p class="small">numerics with rounding errors still trace real orbits</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Persistence</p>
+      <p>$C^1$-small perturbations $f$ of $g$: nearby compact invariant sets remain hyperbolic, and $\exists$ hyperbolic $K$ with $\psi \circ f|_K = g|_\Lambda \circ \psi$, $\psi$ homeo near $\Id$.</p>
+      <p><b>Cor:</b> Anosov diffeos are open in $C^1$ and structurally stable.</p>
+      <p class="small">the horseshoe's invariant set is hyperbolic $\Rightarrow$ chaos persists &rarr; see the road to chaos</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="col">
+
+<section class="panel band-e" id="panel-a4">
+  <h3>Flows &harr; maps <span class="ref">&sect;5</span></h3>
+  <div class="dict">
+    <div class="drow dhd"><div>continuous time $\varphi_t$</div><div>discrete time $g^k$</div></div>
+    <div class="drow"><div>equilibrium $f(x^*) = 0$</div><div>fixed point $g(x^*) = x^*$</div></div>
+    <div class="drow"><div>asympt. stable $\iff \operatorname{Re}\lambda_j &lt; 0$</div><div>$\iff |\mu_j| &lt; 1$</div></div>
+    <div class="drow"><div>periodic orbit $\Gamma$, period $T$</div><div>fixed point of Poincar&eacute; map $P$</div></div>
+    <div class="drow"><div>time-$T$ map $\varphi_T$</div><div>any diffeo, via suspension flow</div></div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card def">
+      <p class="hd">Poincar&eacute; map <span class="tag">at $y \in \Gamma$</span></p>
+      <p>section $\Sigma = \{x : (x-y)\cdot f(y) = 0\}$ transverse to the flow. Implicit function theorem $\Rightarrow$ return time $\tau \in C^1$, $\tau(y) = T$, and</p>
+      <div class="dm">$P(x) = \varphi_{\tau(x)}(x) \in C^1(\Sigma \cap B(y;\delta))$</div>
+    </div>
+    <div class="card thm">
+      <p class="hd">Multipliers &amp; monodromy</p>
+      <p>multipliers $\mu_1, \dots, \mu_{d-1}$ = eigenvalues of $DP(0)$ &mdash; independent of the point on $\Gamma$, the section, and coordinates (local Poincar&eacute; maps are conjugate).</p>
+      <p>variational equation $u' = Df(\Gamma(t))\,u$; monodromy matrix $M(T)$ has eigenvalues $\{1, \mu_1, \dots, \mu_{d-1}\}$.</p>
+      <p>all $|\mu_j| &lt; 1 \Rightarrow \Gamma$ asymptotically stable.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Suspension &amp; obstruction</p>
+      <p>$g(x) = -\tfrac12 x$ is <i>not</i> a time-$T$ map of any flow on $\R$ (orientation). But every diffeo $g$ of $\R^d$ is the return map of a flow on the $(d{+}1)$-dim mapping torus $M = (\R^d \times [0,T])/\!\sim$, $(g(x),0)\sim(x,T)$.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-b" id="panel-b1">
+  <h3>Structural stability <span class="ref">&sect;6</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Definition</p>
+      <p>$f \in C^1(M)$ is <b>structurally stable</b> if $\exists \varepsilon > 0$: every $g$ with $\|f - g\|_{C^1} < \varepsilon$ generates a flow topologically equivalent to $\varphi_t^f$.</p>
+      <p class="small">$\|f\|_{C^k} = \sum_{|\alpha| \le k} \sup_K |D^\alpha f|$ on compact $K$ &mdash; a Banach space</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Nonwandering set</p>
+      <p>$x \in \NW(\varphi)$: every neighborhood $U \ni x$, $\forall t_0\ \exists t > t_0$: $\varphi_t(U) \cap U \neq \emptyset$.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Peixoto <span class="tag">compact 2-manifold</span></p>
+      <p>$f \in C^1$ structurally stable $\iff$</p>
+      <ul>
+        <li>(T1) finitely many equilibria &amp; periodic orbits, all hyperbolic</li>
+        <li>(T2) no saddle&ndash;saddle connections: $W^s(x) \cap W^u(y) = \emptyset$</li>
+        <li>(T3) $\NW(\varphi) = \{\text{equilibria}\} \cup \{\text{periodic orbits}\}$</li>
+      </ul>
+      <p>$M$ orientable $\Rightarrow$ structurally stable fields are <b>open and dense</b> in $C^1(M)$. Fails for $d \ge 3$.</p>
+      <p class="small">ex. torus flow $x' = \omega_1$, $y' = \omega_2$: structurally <i>unstable</i> ($\omega_1/\omega_2 \in \Q$: all orbits periodic; irrational: all orbits dense)</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Morse&ndash;Smale system</p>
+      <p>(D1) finitely many equilibria + periodic orbits, all hyperbolic; (D2) all $W^s \cap W^u$ transversal; (D3) $\NW$ = equilibria $\cup$ periodic orbits.</p>
+      <p><b>Thm:</b> Morse&ndash;Smale flows on compact $M$ are structurally stable (any dim) &mdash; but <i>not generic</i> for $d \ge 3$.</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Generic property</p>
+      <p>holds on a <b>residual</b> set = countable intersection of open dense sets.</p>
+      <p class="small">ex. hyperbolicity is generic in $\R^{d \times d}$</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-c" id="panel-c1">
+  <h3>The road to chaos <span class="ref">&sect;14, &sect;15</span></h3>
+  <div class="chain">
+    <div class="cbox hue-n">
+      <p class="hd">Periodically perturbed Hamiltonian system</p>
+      <p>$x' = f(x) + \varepsilon g(x,t)$, &nbsp;$f = (\partial_{x_2} H, -\partial_{x_1} H)^{\!\top}$, $g$ $T$-periodic; unperturbed homoclinic orbit $\gamma(t)$ to a saddle $p$. Autonomize on $\R^2 \times S^1$, take the stroboscopic Poincar&eacute; map $P_\varepsilon^{t_0}$ &mdash; the saddle persists: $p_\varepsilon^{t_0} = p + \mathcal{O}(\varepsilon)$.</p>
+    </div>
+    <div class="link"><span class="arr">&darr;</span><span class="why">leading-order splitting of $W^s$, $W^u$</span></div>
+    <div class="cbox hue-c">
+      <p class="hd">Melnikov function</p>
+      <div class="dm">$M(t_0) = \displaystyle\int_{-\infty}^{\infty} f(\gamma(t - t_0)) \wedge g(\gamma(t - t_0), t)\, dt$</div>
+      <p>signed distance: $d(t_0) = \varepsilon\, \dfrac{M(t_0)}{|f(\gamma(0))|} + \mathcal{O}(\varepsilon^2)$, &nbsp;$a \wedge b = a_1 b_2 - a_2 b_1$.</p>
+      <p><b>simple zero of $M$</b> $\Rightarrow$ $W^s(p_\varepsilon) \pitchfork W^u(p_\varepsilon)$; no zeros $\Rightarrow$ no intersection.</p>
+      <p class="small">Duffing $x'' = x - x^3 + \varepsilon(\alpha \cos t - x')$, $\gamma_\pm = \pm(\sqrt2\,\mathrm{sech}\,t,\ -\sqrt2\,\mathrm{sech}\,t \tanh t)$:
+      $M(t_0) = -\tfrac43 + \sqrt2\,\alpha\pi\,\mathrm{sech}(\tfrac{\pi}{2}) \sin t_0$ &mdash; simple zeros for $\alpha$ large enough</p>
+    </div>
+    <div class="link"><span class="arr">&darr;</span><span class="why">transverse homoclinic point $q \in W^s(0) \pitchfork W^u(0)$</span></div>
+    <div class="cbox hue-c">
+      <p class="hd">Smale&ndash;Birkhoff homoclinic theorem</p>
+      <p>diffeo with hyperbolic saddle + transverse homoclinic point $\Rightarrow$ some iterate $g^\kappa$ has an invariant set $X$ conjugate to a <b>horseshoe</b>.</p>
+      <p class="small"><b>$\lambda$-lemma:</b> a disk $D$ transverse to $W^s$ has iterates $g^n(D)$ accumulating $C^1$ on $W^u$ &mdash; this folds a rectangle near $q$ into a horseshoe. (Transverse homoclinic points occur only in maps / Poincar&eacute; maps, never in planar flows.)</p>
+    </div>
+    <div class="link"><span class="arr">&darr;</span><span class="why">stretch $\mu > 2$, contract $\lambda < \tfrac12$, fold</span></div>
+    <div class="cbox hue-c">
+      <p class="hd">Smale horseshoe &nbsp;$\cong$&nbsp; full shift</p>
+      <p>$X = \{x : g^k(x) \in Y = [0,1]^2\ \forall k \in \Z\}$; itinerary map $\varphi(x)_j = a_j$ with $g^j(x) \in H_{a_j}$ is a homeomorphism conjugating $g|_X$ to the shift $\sigma$ on $\Sigma_2 = \{0,1\}^{\Z}$.</p>
+      <p class="small">generalized horseshoe: $N$ strips + cone conditions $\Rightarrow$ shift on $N$ symbols</p>
+    </div>
+    <div class="link"><span class="arr">&darr;</span><span class="why">count orbits symbolically</span></div>
+    <div class="cbox hue-e">
+      <p class="hd">Consequences</p>
+      <ul>
+        <li>countably many (saddle) periodic orbits, of every period</li>
+        <li>uncountably many aperiodic orbits; a dense orbit</li>
+        <li>$X$ is a hyperbolic set $\Rightarrow$ the whole picture <b>persists</b> under perturbation</li>
+        <li>$g|_X$ is chaotic; Lyapunov exponents $\ln\mu > 0 > \ln\lambda$</li>
+      </ul>
+      <p class="small">alternative entrance: Shilnikov saddle-focus loop (zoo) also forces horseshoes</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="col w2">
+
+<section class="panel band-b" id="panel-b3">
+  <h3>The bifurcation zoo <span class="ref">&sect;8, &sect;12, &sect;13</span></h3>
+  <div class="cards" style="margin-bottom:10px">
+    <div class="card def">
+      <p class="hd">Bifurcation <span class="tag">loss of equivalence under parameter variation</span></p>
+      <p>Families $x' = f(x,p)$, $y' = g(y,q)$ are <b>fiber topologically equivalent</b> if a homeomorphism $\xi(p) = q$ matches parameters and each $f(\cdot, p) \sim g(\cdot, \xi(p))$ topologically. A <b>bifurcation diagram</b> stratifies parameter space by equivalence class; an <b>unfolding</b> contains the bifurcation persistently; the minimal number of parameters is the <b>codimension</b>.</p>
+    </div>
+  </div>
+
+  <div class="zoo">
+    <div class="zrow zhead">
+      <div>$\lambda$ / $\mu$</div><div>bifurcation</div><div>genericity conditions</div><div>topological normal form</div><div>what happens</div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="27" y="27"/></svg></div>
+      <div><b>fold</b> (saddle-node)<br><span class="small">flows &middot; codim 1</span></div>
+      <div>$f(0,0)=0$, $\partial_x f(0,0) = 0$;<br>$\partial_{xx} f(0,0) \neq 0$, $\partial_p f(0,0) \neq 0$</div>
+      <div>$y' = q \pm y^2$</div>
+      <div>two equilibria collide and annihilate<br><span class="small">$x' = p - x^2$: $\pm\sqrt{p}$ for $p&gt;0$, none for $p&lt;0$</span></div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="27" y="27"/></svg></div>
+      <div><b>transcritical</b><br><span class="small">flows &middot; constrained</span></div>
+      <div>$\lambda = 0$ with fixed line of equilibria $x = 0$</div>
+      <div>$y' = y(q - y)$</div>
+      <div>two equilibria cross and <b>exchange stability</b></div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="27" y="13"/><use href="#ev" x="27" y="41"/></svg></div>
+      <div><b>Hopf</b><br><span class="small">flows, $d \ge 2$ &middot; codim 1</span></div>
+      <div>$\lambda_{1,2}(p) = \mu(p) \pm i\omega(p)$, $\mu(0) = 0$, $\omega(0) &gt; 0$; first Lyapunov coeff. $l_1 \neq 0$</div>
+      <div>$\begin{pmatrix} y_1' \\ y_2' \end{pmatrix} = \begin{pmatrix} q &amp; -1 \\ 1 &amp; q \end{pmatrix} y \pm (y_1^2 + y_2^2)\, y$</div>
+      <div><b>limit cycle</b> born; $l_1 &lt; 0$ supercritical (stable cycle), $l_1 &gt; 0$ subcritical</div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-map"/><use href="#ev" x="43" y="27"/></svg></div>
+      <div><b>fold of maps</b><br><span class="small">maps &middot; codim 1</span></div>
+      <div>$\mu = 1$; $\partial_{xx} g \neq 0$, $\partial_p g \neq 0$</div>
+      <div>$y \mapsto q + y \pm y^2$</div>
+      <div>fixed points collide and annihilate</div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-map"/><use href="#ev" x="11" y="27"/></svg></div>
+      <div><b>flip</b> (period doubling)<br><span class="small">maps &middot; codim 1</span></div>
+      <div>$\mu = -1$; non-degeneracy + transversality</div>
+      <div>$y \mapsto -(1+q)\,y \pm y^3$</div>
+      <div>fixed point loses stability, stable <b>period-2 orbit</b> emerges; cascades $\to$ Feigenbaum</div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-map"/><use href="#ev" x="38.3" y="15.7"/><use href="#ev" x="38.3" y="38.3"/></svg></div>
+      <div><b>Neimark&ndash;Sacker</b><br><span class="small">maps &middot; codim 1</span></div>
+      <div>complex pair of multipliers crosses the unit circle</div>
+      <div class="small">on $W^c$: rotation + cubic terms; closed invariant curve of radius $\mathcal{O}(\sqrt{q})$</div>
+      <div>closed <b>invariant curve</b> bifurcates<br><span class="small">H&eacute;non map $(x_1,x_2) \mapsto (x_2,\ p_1 - p_2 x_1 - x_2^2)$: NS, flip &amp; fold regions</span></div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="23" y="27"/><use href="#ev" x="31" y="27"/></svg></div>
+      <div><b>Bogdanov&ndash;Takens</b><br><span class="small">flows &middot; codim 2</span></div>
+      <div>double zero eigenvalue, nilpotent $\begin{pmatrix} 0 &amp; 1 \\ 0 &amp; 0 \end{pmatrix}$</div>
+      <div>$y_1' = y_2$,<br>$y_2' = q_1 + q_2 y_1 + y_1^2 \pm y_1 y_2$</div>
+      <div class="btcell">
+        <svg viewBox="0 0 120 78" class="btsvg">
+          <line x1="8" y1="39" x2="112" y2="39" stroke="#c9c9d6" stroke-width="1"/>
+          <line x1="60" y1="6" x2="60" y2="72" stroke="#c9c9d6" stroke-width="1"/>
+          <path d="M14,10 Q60,62 106,10" fill="none" stroke="#b06119" stroke-width="1.8"/>
+          <line x1="60" y1="39" x2="12" y2="39" stroke="#7b4bb5" stroke-width="1.8"/>
+          <path d="M60,39 Q34,46 14,32" fill="none" stroke="#2a6cb0" stroke-width="1.6" stroke-dasharray="3 2.5"/>
+          <text x="98" y="24" font-size="9" fill="#b06119">F</text>
+          <text x="18" y="51" font-size="9" fill="#7b4bb5">H</text>
+          <text x="22" y="28" font-size="9" fill="#2a6cb0">hom</text>
+        </svg>
+        <span class="small">fold $4q_1 = q_2^2$, Hopf $q_1 = 0,\, q_2 &lt; 0$, homoclinic curve between &mdash; rescaling $\to$ Hamiltonian $\tfrac12 Y_2^2 - \tfrac12 Y_1^2 + \tfrac13 Y_1^3$ with homoclinic loop</span>
+      </div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="14" y="27"/><use href="#ev" x="42" y="27"/></svg></div>
+      <div><b>homoclinic loop</b><br>Andronov&ndash;Leontovich<br><span class="small">$\R^2$ &middot; global, codim 1</span></div>
+      <div>homoclinic orbit to saddle, $\lambda_1 &lt; 0 &lt; \lambda_2$; saddle quantity $\sigma = \lambda_1 + \lambda_2 \neq 0$; split function $\xi'(0) \neq 0$</div>
+      <div class="small">$\xi(p)$ = signed distance of $W^u, W^s$ on a section $\Sigma$ near the saddle</div>
+      <div>unique <b>limit cycle</b> bifurcates from the loop; $\sigma &lt; 0$: stable, $\sigma &gt; 0$: unstable</div>
+    </div>
+
+    <div class="zrow">
+      <div><svg viewBox="0 0 54 54" class="eig"><use href="#fr-flow"/><use href="#ev" x="42" y="27"/><use href="#ev" x="17" y="13"/><use href="#ev" x="17" y="41"/></svg></div>
+      <div><b>Shilnikov</b><br><span class="small">$\R^3$ &middot; global</span></div>
+      <div>homoclinic orbit to saddle-focus: $\lambda_1 &gt; 0$, $\lambda_{2,3} = \alpha \pm i\omega$, $\alpha &lt; 0$; $\sigma = \lambda_1 + \alpha &gt; 0$, $\lambda_2 \neq \lambda_3$</div>
+      <div class="small">spiral return map intersects itself transversally</div>
+      <div><b>infinitely many</b> saddle periodic orbits accumulate on the loop $\Rightarrow$ chaos<br><span class="small">ex. FitzHugh&ndash;Nagumo traveling waves, $0 &lt; \varepsilon \ll 1$</span></div>
+    </div>
+  </div>
+
+  <p class="note">Homoclinic orbit: $\gamma(t) \to x^*$ for $t \to \pm\infty$; heteroclinic: different limits. Structurally unstable in $\R^2$ (Peixoto) but persistent phenomena occur for $d \ge 3$.</p>
+</section>
+
+<section class="panel band-b" id="panel-b4">
+  <h3>Normal forms: the reduction pipeline <span class="ref">&sect;9, &sect;10, &sect;11</span></h3>
+  <div class="pipeline">
+    <div class="pbox hue-n"><b>non-hyperbolic equilibrium</b><br><span class="small">$d_c > 0$ critical eigenvalues block $B$; $A = Df(0)$</span></div>
+    <div class="parr">&rarr;</div>
+    <div class="pbox hue-b"><b>center-manifold reduction</b><br><span class="small">restrict to $W^c_\loc$: dynamics in $\R^{d_c}$ decide everything</span></div>
+    <div class="parr">&rarr;</div>
+    <div class="pbox hue-b"><b>kill non-resonant terms</b><br><span class="small">$x = y + h^{(k)}(y)$, solve $L h^{(k)} = f^{(k)}$ order by order</span></div>
+    <div class="parr">&rarr;</div>
+    <div class="pbox hue-b"><b>resonant normal form</b><br><span class="small">$y' = Ay + r^{(2)} + \dots + r^{(k)} + \mathcal{O}(|y|^{k+1})$</span></div>
+    <div class="parr">&rarr;</div>
+    <div class="pbox hue-e"><b>truncate + unfold</b><br><span class="small">add parameters $q$ &rarr; topological normal forms of the zoo</span></div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card def">
+      <p class="hd">Homological equation</p>
+      <p>$L : H_k \to H_k$ on homogeneous vector polynomials, $\;L h = Dh \cdot Ay - A\,h(y) = [\,h, Ay\,]$.</p>
+      <p>Solvable part of $f^{(k)}$ is removed; <b>resonant terms</b> span a complement $R_k = \ker L^*$ of $\operatorname{range} L$ (if no generalized $0$-eigenvectors: $H_k = \ker L \oplus \operatorname{range} L$).</p>
+      <p class="small">in practice: write $L$ as matrix $M^{(k)}$ in monomial basis, e.g. $k=2$: $\{x^2, xy, y^2\} \otimes \{\partial_x, \partial_y\} \cong \R^6$; resonant terms from $\ker (M^{(k)})^{\!\top}$</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Hopf normal form <span class="tag">eigenvalues $\pm i\omega$</span></p>
+      <div class="dm">$y' = \begin{pmatrix} 0 &amp; -1 \\ 1 &amp; 0 \end{pmatrix} y + (y_1^2 + y_2^2) \begin{pmatrix} p_1 &amp; -p_2 \\ p_2 &amp; p_1 \end{pmatrix} y + \mathcal{O}(|y|^4)$</div>
+      <p class="small">cubic terms are resonant &mdash; they cannot be removed; $p_1 = l_1$ decides super/subcritical</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Jets &amp; determinacy <span class="tag">&sect;11</span></p>
+      <p>$k$-jet $J^k F$ = Taylor polynomial to order $k$. BT 2-jet $y_1' = y_2$, $y_2' = y_1^2 \pm y_1 y_2$ is <b>topologically determinate</b>: blow-up $\Phi(\theta, r) = (r\cos\theta, r\sin\theta)$, desingularize $\bar F = r^{-l}(D\Phi^{-1} \circ F \circ \Phi)$ &mdash; the origin blows up to a circle of hyperbolic equilibria, so Hartman&ndash;Grobman finishes the classification.</p>
+    </div>
+  </div>
+</section>
+
+<div class="prow">
+<section class="panel band-c" id="panel-c3">
+  <h3>One-dimensional maps <span class="ref">&sect;16</span></h3>
+  <div class="sharko">
+    <div class="srow"><span class="schip">$1$</span>&#9665;<span class="schip">$2$</span>&#9665;<span class="schip">$4$</span>&#9665;<span class="schip">$8$</span>&#9665;<span class="sdots">&ctdot;</span>&#9665;<span class="schip">$2^n{\cdot}7$</span>&#9665;<span class="schip">$2^n{\cdot}5$</span>&#9665;<span class="schip">$2^n{\cdot}3$</span>&#9665;<span class="sdots">&ctdot;</span>&#9665;<span class="schip">$9$</span>&#9665;<span class="schip">$7$</span>&#9665;<span class="schip">$5$</span>&#9665;<span class="schip hot">$3$</span></div>
+  </div>
+  <div class="cards">
+    <div class="card thm">
+      <p class="hd">Sharkovskii <span class="tag">$g \in C^0([a,b],\R)$</span></p>
+      <p>periodic point of minimal period $n$ $\Rightarrow$ periodic orbits of every period $k \triangleleft n$.</p>
+      <p><b>Li&ndash;Yorke:</b> period three $\Rightarrow$ all periods (&ldquo;period three implies chaos&rdquo;).</p>
+      <p class="small">tent map $p=2$: $\tfrac27 \mapsto \tfrac47 \mapsto \tfrac67 \mapsto \tfrac27$ is a 3-orbit</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Schwarzian derivative</p>
+      <div class="dm">$Sg = \dfrac{g'''}{g'} - \dfrac32 \left(\dfrac{g''}{g'}\right)^{\!2}$</div>
+      <p><b>minimum principle:</b> $Sg &lt; 0 \Rightarrow |g'|$ has no interior local minimum.</p>
+      <p class="small">unimodal: $g(0)=g(1)=0$, unique max; S-unimodal: also $Sg &lt; 0$</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Singer</p>
+      <p>$g \in C^3(I,I)$, $Sg &lt; 0$, $n$ critical points $\Rightarrow$ at most $n + 2$ attracting periodic orbits.</p>
+      <p class="small">logistic $px(1-x)$: $Sg = \tfrac{-6}{(1-2x)^2} &lt; 0$, one critical point $\Rightarrow$ $\le 3$</p>
+    </div>
+  </div>
+</section>
+<section class="panel band-c" id="panel-c4">
+  <h3>Renormalization &amp; universality <span class="ref">&sect;17</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Idea</p>
+      <p>act on maps by <i>rescaling</i> phase space, time (iterate), and parameters; self-similar dynamics = fixed point of the renormalization operator.</p>
+      <p class="small">fold: $g^2(y;q) \approx 2q + y - 2y^2$ rescales back to a fold ($\alpha = 2$, $\beta = 4$) $\Rightarrow$ passage time $N(q) \sim q^{-1/2}$ (critical slowing down)</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Feigenbaum universality <span class="tag">S-unimodal maps</span></p>
+      <p>flip cascade $p_0 &lt; p_1 &lt; \dots \to p_\infty$ (logistic: $p_0 = 3$, 2-cycle multiplier $4 + 2p - p^2$),</p>
+      <div class="dm">$\delta_F = \lim_n \frac{p_n - p_{n-1}}{p_{n+1} - p_n} \approx 4.6692, \qquad d_n = \kappa_2\, \alpha_F^{-n},\ \ \alpha_F \approx -2.5029$</div>
+      <p class="small">$d_n$: distance of the superstable $2^n$-cycle to the critical point $x = \tfrac12$ (superstable: all multipliers $= 0$, i.e. $\tfrac12$ in the cycle)</p>
+      <p>fixed-point equation $g(x) = \alpha\, g^2(x/\alpha)$, $g(0)=1$, $g'(0)=0$; $\delta_F$ = the unique unstable eigenvalue of the linearized operator &mdash; the same constants for <i>every</i> such family.</p>
+    </div>
+  </div>
+</section>
+<section class="panel band-c" id="panel-symb">
+  <h3>Symbolic dynamics: the universal model <span class="ref">&sect;1, &sect;13, &sect;22</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Shift spaces</p>
+      <p>$\Sigma_k$ = bi-infinite sequences over $\{0, \dots, k{-}1\}$; shift $(\sigma \omega)_j = \omega_{j+1}$. Periodic orbits $=$ periodic sequences; a sequence containing every finite word has a dense orbit.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">One model, many systems</p>
+      <ul>
+        <li>horseshoe $g|_X \cong \sigma$ on $\Sigma_2$ (itineraries through $H_0, H_1$)</li>
+        <li>tent map $p{=}2$: semi-conjugate to $\Sigma_2^+$ via binary coding $H(s) = \sum_j s_j 2^{-(j+1)}$</li>
+        <li>Bernoulli measure $p$ on $\Sigma_k$ $\to$ the probabilistic model; entropy $-\sum p_j \ln p_j$</li>
+      </ul>
+      <p class="small">prove chaos once for $\sigma$, transport it along conjugacies</p>
+    </div>
+  </div>
+</section>
+</div>
+
+</div>
+
+<div class="col">
+
+<section class="panel band-c" id="panel-c2">
+  <h3>What is chaos? <span class="ref">&sect;15</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(190px, 1.6fr) repeat(5, minmax(54px, 0.5fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>1</b> Sensitive dependence</div>
+      <div class="pf">$\exists r &gt; 0\ \forall \delta\ \exists y_0, T:$</div>
+      <div class="pf">$|x_0 - y_0| &lt; \delta,\ |\varphi_T(x_0) - \varphi_T(y_0)| \ge r$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>2</b> Topological transitivity</div>
+      <div class="pn">some forward orbit is dense in $X$</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>3</b> Chaotic $:=$ 1 $\wedge$ 2</div>
+      <div class="pn">on an invariant set $S$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>4</b> Positive Lyapunov exponent</div>
+      <div class="pf">$l_j(x_0) = \lim_k \tfrac1k \ln \lambda_j^{(k)}$</div>
+      <div class="pn">$\lambda_j^{(k)}$ singular values of $Dg^k_{x_0}$; Liouville: $\sum_j l_j = \ln|\det Dg|$ (if constant)</div>
+    </div>
+
+    <div class="seg hue-c" style="grid-column:2; grid-row:1/5">
+      <h4>doubling</h4>
+      <div class="ex">$2x \bmod 1$; $l = \ln 2$</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:3; grid-row:1/5">
+      <h4>tent $\cong$ logistic</h4>
+      <div class="ex">$p{=}2$ / $p{=}4$: conjugate! $l = \ln 2$</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:4; grid-row:1/4">
+      <h4>shift $\sigma$</h4>
+      <div class="ex">on $\Sigma_2$; universal model; row 4 n/a</div>
+    </div>
+    <div class="seg hue-c" style="grid-column:5; grid-row:1/5">
+      <h4>horse&shy;shoe</h4>
+      <div class="ex">$l_1 = \ln\mu$, $l_2 = \ln\lambda$</div>
+    </div>
+    <div class="seg hue-n" style="grid-column:6; grid-row:2/3">
+      <h4>rotation</h4>
+      <div class="ex">irrational: dense orbits, <i>no</i> sensitivity</div>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-c" id="panel-c5">
+  <h3>Attractors <span class="ref">&sect;18</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(200px, 1.5fr) repeat(4, minmax(68px, 0.55fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>0</b> Trapping region</div>
+      <div class="pf">$U$ compact, $\varphi_t(U) \subset \intr(U)\ \forall t &gt; 0$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>1</b> Attracting set</div>
+      <div class="pf">$A = \bigcap_{t \ge 0} \varphi_t(U)$</div>
+      <div class="pn">closed, invariant; $\omega(x_0) \subset A$ on $U$; hyperbolic $x^* \in A \Rightarrow W^u(x^*) \subset A$</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>2</b> Indecomposable</div>
+      <div class="pn">no smaller attracting set inside</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>3</b> Chaotic on $A$</div>
+      <div class="pn">sensitive + transitive</div>
+    </div>
+    <div class="prop" style="grid-row:5">
+      <div class="pt"><b>4</b> Hyperbolic set</div>
+      <div class="pn">uniform splitting (D1)&ndash;(D4)</div>
+    </div>
+
+    <div class="seg hue-d" style="grid-column:2; grid-row:1/3">
+      <h4>attracting set</h4>
+      <div class="ex">$r' = 1{-}r$ on circle: $\{r{=}1\}$ attracts, but most orbits go to one point</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:3; grid-row:1/4">
+      <h4>attractor</h4>
+      <div class="ex">stable equilibria, stable limit cycles</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:4; grid-row:1/5">
+      <h4>chaotic / strange attractor</h4>
+      <div class="ex"><b>strange</b> = chaotic &and; <i>not</i> hyperbolic: Lorenz</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:5; grid-row:1/4">
+      <h4>hyperbolic attractor</h4>
+    </div>
+    <div class="hjoint" style="grid-column:5; grid-row:4/5"></div>
+    <div class="seg hue-d" style="grid-column:5; grid-row:5/6">
+      <div class="ex">Smale&ndash;Williams solenoid: locally Cantor $\times$ interval</div>
+    </div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card ex">
+      <p class="hd">Lorenz system <span class="tag">$\sigma = 10$, $\rho = 28$, $\beta = 8/3$</span></p>
+      <p>$x_1' = \sigma(x_2 - x_1)$, $x_2' = \rho x_1 - x_2 - x_1 x_3$, $x_3' = x_1 x_2 - \beta x_3$; the ellipsoid $\sigma x_1^2 + x_2^2 + \beta(x_3 - \tfrac{\rho + \sigma}{2})^2 \le c$ is trapping. $\nabla \!\cdot\! f = -(\sigma + 1 + \beta) &lt; 0 \Rightarrow$ the attractor has <b>volume zero</b>.</p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Smale&ndash;Williams solenoid <span class="tag">hyperbolic attractor</span></p>
+      <p>$g(\theta, x, y) = \left(2\theta,\ \lambda x + \tfrac12\cos 2\pi\theta,\ \lambda y + \tfrac12\sin 2\pi\theta\right)$ on $S^1 \times D^2$, $\lambda \in (0, \tfrac12)$; &nbsp;$A = \bigcap_k g^k(S^1 \times D^2)$.</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Milnor attractor <span class="tag">measure-theoretic</span></p>
+      <p>closed invariant $A$ with $\mu(B(A)) > 0$ and no proper closed $\tilde A \subset A$ with $\mu(B(A) \setminus B(\tilde A)) = 0$.</p>
+      <p class="small">ex. $x' = -x^2$: $x^* = 0$ attracts $[0, \infty)$ although unstable</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Fractal dimension</p>
+      <p>box-counting: $\dim_B(S) = \lim_{r \to 0} \frac{\ln N(r,S)}{\ln(1/r)}$; middle-third Cantor set: $\frac{\ln 2}{\ln 3} \approx 0.63$. Strange attractors typically have non-integer dimension.</p>
+      <p class="small">Milnor attractor (positive-measure basin) &mdash; see stability ladder, row 2</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-d" id="panel-c6">
+  <h3>Recurrence &amp; Conley&rsquo;s theorem <span class="ref">&sect;19</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(205px, 1.5fr) repeat(4, minmax(62px, 0.5fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>0</b> Fixed: $g(x) = x$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>1</b> Periodic: $g^n(x) = x$</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>2</b> Nonwandering</div>
+      <div class="pn">$\forall U \ni x$, some $\varphi_t(U) \cap U \neq \emptyset$, $t$ arbitrarily large</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>3</b> Chain recurrent</div>
+      <div class="pn">$\forall \delta &gt; 0$ a $\delta$-pseudo-orbit loops $x \to x$</div>
+    </div>
+
+    <div class="seg hue-d" style="grid-column:2; grid-row:1/2"><h4>$\Fix(g)$</h4></div>
+    <div class="seg hue-d" style="grid-column:3; grid-row:1/3"><h4>$\Per(g)$</h4></div>
+    <div class="seg hue-d" style="grid-column:4; grid-row:1/4"><h4>$\NW(g)$</h4></div>
+    <div class="seg hue-d" style="grid-column:5; grid-row:1/5"><h4>$\CR(g)$</h4><div class="ex">chain classes = equivalence classes of two-way $\delta$-chains</div></div>
+  </div>
+  <div class="cards" style="margin-top:10px">
+    <div class="card thm">
+      <p class="hd">Conley <span class="tag">homeo of compact metric $X$</span></p>
+      <p>$\exists$ <b>complete Lyapunov function</b> $L \in C(X,\R)$:</p>
+      <ul>
+        <li>(T1) $L(g(x)) &lt; L(x)$ off $\CR(g)$</li>
+        <li>(T2) on $\CR(g)$: $L(x) = L(y) \iff x, y$ chain equivalent</li>
+        <li>(T3) $L(\CR(g))$ compact, nowhere dense (Cantor-like)</li>
+      </ul>
+      <p><b>moral:</b> every system = gradient-like part + chain-recurrent part.</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Construction via attractor&ndash;repellor pairs</p>
+      <p>dual repellor $A^* = \bigcap_{k \ge 0} g^{-k}(X \setminus \overline U)$ of an attractor $A$ with isolating $U$; there is $L_i \in C(X, [0,1])$ with $L_i|_{A_i} = 0$, $L_i|_{A_i^*} = 1$, strictly decreasing elsewhere. Then</p>
+      <div class="dm">$\CR(g) = \bigcap_i \left( A_i \cup A_i^* \right), \qquad L = \sum_i \tfrac{2}{3^i} L_i$</div>
+      <p class="small">$L(\CR)$ lands in the middle-third Cantor set &mdash; hence nowhere dense</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="col">
+
+<section class="panel band-d" id="panel-c7">
+  <h3>The ergodic hierarchy <span class="ref">&sect;20&ndash;22</span></h3>
+  <div class="lattice" style="grid-template-columns: minmax(245px, 1.6fr) repeat(4, minmax(56px, 0.5fr));">
+    <div class="prop r0" style="grid-row:1">
+      <div class="pt"><b>0</b> Invariant (probability) measure</div>
+      <div class="pf">$\mu(g^{-1}(A)) = \mu(A) \quad \forall A \in \mathcal{F}$</div>
+      <div class="pn">$\Rightarrow \int f\, d\mu = \int f \circ g\, d\mu$</div>
+    </div>
+    <div class="prop" style="grid-row:2">
+      <div class="pt"><b>1</b> Ergodic</div>
+      <div class="pf">$g^{-1}(A) = A \Rightarrow \mu(A) \in \{0, 1\}$</div>
+      <div class="pn">$\iff$ invariant $f \in L^2$ const a.e. $\iff$ time avg $=$ space avg a.e. $\iff \frac1n \sum_j \mu(g^{-j}A \cap B) \to \mu(A)\mu(B)$</div>
+    </div>
+    <div class="prop" style="grid-row:3">
+      <div class="pt"><b>2</b> Weak mixing</div>
+      <div class="pn">Ces&agrave;ro-averaged correlations vanish:</div>
+      <div class="pf tight">$\tfrac1n \textstyle\sum_{j} \left| \mu(g^{-j}A \cap B) - \mu(A)\mu(B) \right| \to 0$</div>
+    </div>
+    <div class="prop" style="grid-row:4">
+      <div class="pt"><b>3</b> Strong mixing</div>
+      <div class="pf">$\mu(g^{-n}A \cap B) \to \mu(A)\,\mu(B)$</div>
+      <div class="pn">correlations decay: the system forgets its initial state</div>
+    </div>
+
+    <div class="seg hue-n" style="grid-column:2; grid-row:1/2">
+      <h4>rotation<br>$r \in \Q$</h4>
+      <div class="ex">Lebesgue invariant; not ergodic</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:3; grid-row:1/3">
+      <h4>rotation<br>$r \notin \Q$</h4>
+      <div class="ex">ergodic (Fourier) but <b>not</b> weak mixing: pure point spectrum $e^{2\pi i n r}$</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:4; grid-row:1/5">
+      <h4>expand&shy;ing maps</h4>
+      <div class="ex">$\alpha x \bmod 1$, $\alpha \in \Z$, $|\alpha| &gt; 1$; dyadic intervals refine uniformly</div>
+    </div>
+    <div class="seg hue-d" style="grid-column:5; grid-row:1/5">
+      <h4>Ber&shy;noulli shift</h4>
+      <div class="ex">$(\Sigma_k, \sigma, p)$; entropy $-\sum p_j \ln p_j$</div>
+    </div>
+  </div>
+  <p class="note">strong mixing $\Rightarrow$ weak mixing $\Rightarrow$ ergodic; all implications strict.</p>
+
+  <h3 class="subhead">Ergodic theorems</h3>
+  <div class="cards">
+    <div class="card thm">
+      <p class="hd">Krylov&ndash;Bogolyubov</p>
+      <p>$X$ compact metric, $g$ continuous $\Rightarrow$ an invariant Borel probability measure exists <span class="small">(empirical averages + Riesz representation)</span></p>
+    </div>
+    <div class="card ex">
+      <p class="hd">Gauss map <span class="tag">invariant measures can be exotic</span></p>
+      <p>$g(x) = \tfrac1x - \lfloor \tfrac1x \rfloor$ on $[0,1)$ preserves $\mu((a,b)) = \tfrac{1}{\ln 2}\int_a^b \tfrac{dy}{1+y}$ &mdash; the shift on continued-fraction digits.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Poincar&eacute; recurrence</p>
+      <p>$g$ measure-preserving, $\mu(B) &gt; 0$ $\Rightarrow$ a.e. $x \in B$ returns to $B$ infinitely often.</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Birkhoff <span class="tag">$f \in L^1$</span></p>
+      <div class="dm">$\frac1n \sum_{j=0}^{n-1} f(g^j(x)) \longrightarrow f^*(x)$ &nbsp;a.e.</div>
+      <p>$f^*$ invariant, $\int f^* d\mu = \int f d\mu$; &nbsp;<b>ergodic case:</b> $f^* = \int f\, d\mu$ a.e. &mdash; time average = space average.</p>
+      <p class="small">von Neumann: also $S_n f \to f^*$ in $L^p$; key lemma: maximal ergodic theorem $\int_{\{F_N &gt; 0\}} f\, d\mu \ge 0$</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Koopman &amp; Perron&ndash;Frobenius operators</p>
+      <p>$L_g f = f \circ g$ on $L^p$ (isometry); adjoint $P_g$: $\langle P f, h \rangle = \langle f, L h \rangle$.</p>
+      <ul>
+        <li>ergodic $\iff 1$ is a simple eigenvalue of $L_g$</li>
+        <li>invertible + continuous spectrum ($1$ the only eigenvalue) $\Rightarrow$ weak mixing</li>
+        <li>strong mixing $\iff \langle P^n f, h \rangle \to \langle f, 1 \rangle \langle 1, h \rangle$</li>
+      </ul>
+      <p class="small">irrational rotation: eigenfunctions $e^{2\pi i n x}$ span $L^2$ (pure point) $\Rightarrow$ not weak mixing</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-d" id="panel-c8">
+  <h3>Entropy <span class="ref">&sect;23</span></h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">Entropy of a partition &rarr; of a map</p>
+      <div class="dm">$H(\mathcal{A}) = -\sum_j \mu(A_j) \ln \mu(A_j)$</div>
+      <div class="dm">$h(g, \mathcal{A}) = \lim_n \tfrac1n H\Big(\bigvee_{j=0}^{n-1} g^{-j} \mathcal{A}\Big), \qquad h(g) = \sup_{\mathcal{A}} h(g, \mathcal{A})$</div>
+      <p class="small">$\mathcal{A} \vee \mathcal{B} = \{A_k \cap B_n\}$: joint refinement; $H(\mathcal{A} \vee \mathcal{B}) = H(\mathcal{A}) + H(\mathcal{B} \mid \mathcal{A})$</p>
+    </div>
+    <div class="card thm">
+      <p class="hd">Kolmogorov&ndash;Sinai &nbsp;&amp;&nbsp; invariance</p>
+      <p>$h$ is a <b>conjugacy invariant</b>; for a generating partition $\mathcal{A}$: $h(g) = h(g, \mathcal{A})$.</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Conditional entropy &amp; rules</p>
+      <p>$H(\mathcal{A} \mid \mathcal{B}) = -\sum_{i,j} \mu(B_j)\, \mu(A_i \mid B_j) \ln \mu(A_i \mid B_j)$</p>
+      <ul>
+        <li>$H(\mathcal{A} \vee \mathcal{B}) = H(\mathcal{A}) + H(\mathcal{B} \mid \mathcal{A})$; &nbsp;$\mathcal{A} \subseteq \mathcal{B} \Rightarrow H(\mathcal{A}) \le H(\mathcal{B})$</li>
+        <li>$h(g, \mathcal{A}) \le H(\mathcal{A})$; &nbsp;$h(g, \mathcal{A}) \le h(g, \mathcal{B}) + H(\mathcal{A} \mid \mathcal{B})$</li>
+        <li>$g$-invariance: $H(g^{-1}\mathcal{A} \mid g^{-1}\mathcal{B}) = H(\mathcal{A} \mid \mathcal{B})$</li>
+      </ul>
+    </div>
+    <div class="card ex">
+      <p class="hd">Why entropy is finer than spectrum</p>
+      <p>Bernoulli shifts: $h = -\sum p_j \ln p_j$; &nbsp;$p = (\tfrac12, \tfrac12)$: $h = \ln 2$, &nbsp;$p = (\tfrac13,\tfrac13,\tfrac13)$: $h = \ln 3$ $\Rightarrow$ <b>not conjugate</b>, though spectrally indistinguishable.</p>
+      <p class="small">entropy $\approx$ average information produced per iteration</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel band-e" id="panel-legend">
+  <h3>How to read this sheet</h3>
+  <div class="cards">
+    <div class="card def">
+      <p class="hd">The lattice panels</p>
+      <p>Numbered rows are <b>properties</b>; each colored column is a <b>notion</b> that satisfies exactly the rows it covers. Longer column = stronger notion; a gap in a column means that property is genuinely skipped (e.g. a Milnor attractor need not be Lyapunov stable).</p>
+    </div>
+    <div class="card def">
+      <p class="hd">Color code</p>
+      <p><span class="swatch" style="background:var(--a-bg);border-color:var(--a-bd)"></span> local theory &nbsp;
+         <span class="swatch" style="background:var(--b-bg);border-color:var(--b-bd)"></span> robustness &amp; bifurcations &nbsp;
+         <span class="swatch" style="background:var(--c-bg);border-color:var(--c-bd)"></span> chaos &nbsp;
+         <span class="swatch" style="background:var(--d-bg);border-color:var(--d-bd)"></span> statistics &nbsp;
+         <span class="swatch" style="background:var(--e-bg);border-color:var(--e-bd)"></span> examples &amp; bridges</p>
+    </div>
+    <div class="card warn">
+      <p class="hd">Two deviations from the notes <span class="tag">deliberate</span></p>
+      <ul>
+        <li>Lorenz parameters printed as $\sigma = 10$, $\rho = 28$ (standard); the notes state $\sigma = 28$, $\rho = 10$ &mdash; a typo given the equations' form.</li>
+        <li>Sharkovskii ordering printed in the standard form ending $\cdots \triangleleft 9 \triangleleft 7 \triangleleft 5 \triangleleft 3$; the notes' line reads &ldquo;$\cdots \triangleleft 3 \triangleleft 5 \triangleleft \cdots$&rdquo;, inconsistent with Li&ndash;Yorke.</li>
+      </ul>
+    </div>
+    <div class="card thm">
+      <p class="hd">The three big bridges</p>
+      <ul>
+        <li><b>Hartman&ndash;Grobman:</b> hyperbolic local dynamics $=$ linear dynamics (up to conjugacy)</li>
+        <li><b>Smale&ndash;Birkhoff:</b> one transverse homoclinic point $\Rightarrow$ full symbolic chaos</li>
+        <li><b>Birkhoff ergodic:</b> time averages $=$ space averages (ergodic case)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</div><!-- /cols -->
+</div><!-- /sheet -->

@@ -1,0 +1,241 @@
+/* ===== Dynamical Systems structural cheatsheet — design system =====
+   Visual language borrowed from the "algebraic structures" poster:
+   numbered property rows + pastel structure columns whose vertical span
+   encodes exactly which properties hold. */
+
+:root {
+  --ink: #1c1c26;
+  --muted: #63637a;
+  --faint: #9c9cb0;
+  --rule: #e4e2ee;
+
+  /* band hues */
+  --a-bg: #f2e7fc;  --a-bd: #dfc8f5;  --a-dk: #7b4bb5;   /* local theory: lavender */
+  --b-bg: #fdeadb;  --b-bd: #f5d2b0;  --b-dk: #b06119;   /* bifurcations: apricot */
+  --c-bg: #e0eefc;  --c-bd: #bcd9f5;  --c-dk: #2a6cb0;   /* chaos: sky */
+  --d-bg: #e2f5e9;  --d-bd: #bfe6cd;  --d-dk: #217a46;   /* ergodic/statistics: mint */
+  --e-bg: #fdf4d7;  --e-bd: #f2e2a4;  --e-dk: #9a7708;   /* bridges/examples: sand */
+  --n-bg: #f0f0f5;  --n-bd: #dcdce6;  --n-dk: #55556a;   /* neutral */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'KaTeX_SansSerif', 'Helvetica Neue', 'Arial', sans-serif;
+  color: var(--ink);
+  background: #fff;
+  font-size: 14.5px;
+  line-height: 1.32;
+}
+.katex { font-size: 1.05em; }
+
+/* ---------- sheet & columns ---------- */
+body.poster .sheet {
+  width: 4320px;
+  padding: 26px 30px 30px;
+}
+.masthead {
+  display: flex; align-items: baseline; gap: 26px;
+  padding: 0 6px 14px;
+}
+.masthead h1 { font-size: 40px; font-weight: 700; letter-spacing: .01em; }
+.masthead .sub { font-size: 17px; color: var(--muted); }
+.masthead .coursemap { margin-left: auto; font-size: 15.5px; color: var(--muted); }
+.masthead .coursemap b { color: var(--ink); font-weight: 600; }
+.masthead .coursemap .sep { color: var(--faint); padding: 0 7px; }
+
+/* ---------- hero mega-lattice (systems x properties) ---------- */
+.hero { margin: 4px 6px 26px; }
+.hero-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 12px; }
+.hero-head h2 { font-size: 27px; font-weight: 700; }
+.hero-sub { font-size: 14px; color: var(--muted); }
+.hlattice {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 0.8fr minmax(330px, 1.05fr) repeat(7, 1fr);
+  gap: 8px 10px;
+  align-items: stretch;
+}
+.hprop { grid-column: 6; padding: 8px 10px 9px 42px; border-top: 1px solid var(--rule); }
+.hprop.hr0 { border-top: none; }
+.hnote { align-self: end; padding: 12px 18px 4px 6px; font-size: 13.5px; color: var(--ink); max-width: 720px; }
+.hnote p + p { margin-top: 6px; }
+.hprop .hpt { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+.hprop .hpt b { display: inline-block; min-width: 24px; color: var(--muted); }
+.hprop .hpf { padding-left: 24px; }
+.hprop .hpf .katex { font-size: 1.28em; }
+.hgroup {
+  grid-column: 6; justify-self: start; align-self: stretch;
+  width: 27px; margin: 2px 0; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+}
+.hgroup span {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-size: 13.5px; font-weight: 600; color: var(--muted); letter-spacing: .04em;
+}
+.hgroup.hue-a { background: var(--a-bg); } .hgroup.hue-b { background: var(--b-bg); }
+.hgroup.hue-c { background: var(--c-bg); } .hgroup.hue-d { background: var(--d-bg); }
+.hgroup.hue-n { background: var(--n-bg); }
+.hcol { border-radius: 12px; padding: 10px 9px 9px; font-size: 12.5px; }
+.hcol h4 { font-size: 15.5px; font-weight: 400; line-height: 1.18; margin-bottom: 6px; }
+.hcol .ex { color: var(--muted); font-size: 12px; line-height: 1.32; }
+.hcol.hue-a { background: var(--a-bg); } .hcol.hue-b { background: var(--b-bg); }
+.hcol.hue-c { background: var(--c-bg); } .hcol.hue-d { background: var(--d-bg); }
+.hcol.hue-e { background: var(--e-bg); } .hcol.hue-n { background: var(--n-bg); }
+.hjoint { justify-self: center; width: 4px; border-radius: 2px; background: #d9d4e6; margin: -6px 0; }
+.hero > .note { margin-top: 10px; padding: 0 6px; }
+
+.cols { display: flex; gap: 22px; align-items: flex-start; }
+.col  { display: flex; flex-direction: column; gap: 20px; flex: 1 1 0; min-width: 0; }
+.col.w2 { flex-grow: 2.05; }
+.prow { display: flex; gap: 20px; align-items: flex-start; }
+.prow .panel { flex: 1 1 0; min-width: 0; }
+
+/* ---------- panels ---------- */
+.panel { border-radius: 14px; padding: 4px 6px 6px; background: #fff; }
+.panel > h3 {
+  font-size: 21px; font-weight: 700; margin: 0 -2px 13px; padding: 8px 14px 7px;
+  border-radius: 11px;
+  display: flex; align-items: baseline; gap: 10px;
+}
+.panel > h3 .ref { margin-left: auto; font-size: 12.5px; font-weight: 400; color: var(--faint); white-space: nowrap; }
+.panel.band-a > h3 { background: var(--a-bg); }
+.panel.band-b > h3 { background: var(--b-bg); }
+.panel.band-c > h3 { background: var(--c-bg); }
+.panel.band-d > h3 { background: var(--d-bg); }
+.panel.band-e > h3 { background: var(--e-bg); }
+
+/* ---------- lattice (property rows x structure columns) ---------- */
+.lattice { display: grid; gap: 7px 8px; align-items: stretch; }
+.lattice .prop { grid-column: 1; padding: 7px 10px 8px 6px; border-top: 1px solid var(--rule); }
+.lattice .prop:first-child, .lattice .prop.r0 { border-top: none; }
+.lattice .prop .pt { font-weight: 600; font-size: 14.5px; margin-bottom: 3px; }
+.lattice .prop .pt b { display: inline-block; min-width: 17px; color: var(--muted); font-weight: 700; }
+.lattice .prop .pf { padding-left: 17px; }
+.lattice .prop .pf .katex { font-size: 1.14em; }
+.lattice .prop .pf.tight .katex { font-size: 0.9em; }
+.lattice .prop .pn { padding-left: 17px; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+.seg { border-radius: 11px; padding: 8px 7px 7px; font-size: 12px; }
+.seg h4 { font-size: 14.5px; font-weight: 400; line-height: 1.18; margin-bottom: 5px; }
+.seg .katex { font-size: 0.98em; }
+.seg .ex { color: var(--muted); font-size: 12px; line-height: 1.3; margin-top: 4px; }
+.seg .ex + .ex { margin-top: 5px; }
+.seg.hue-a { background: var(--a-bg); }
+.seg.hue-b { background: var(--b-bg); }
+.seg.hue-c { background: var(--c-bg); }
+.seg.hue-d { background: var(--d-bg); }
+.seg.hue-e { background: var(--e-bg); }
+.seg.hue-n { background: var(--n-bg); }
+
+/* ---------- foundations seed box ---------- */
+.seedbox {
+  background: var(--a-bg); border-radius: 12px; padding: 11px 13px; margin-bottom: 10px;
+}
+.seedbox .seedname { font-size: 18px; margin-bottom: 5px; }
+.seedbox .seedbody { font-size: 13px; color: var(--ink); }
+
+/* ---------- theorem / definition cards ---------- */
+.cards { display: flex; flex-direction: column; gap: 8px; }
+.card { border-left: 4px solid var(--n-bd); background: #fafafc; border-radius: 6px; padding: 7px 10px 8px; font-size: 13.5px; }
+.card .hd { font-weight: 700; }
+.card .hd .tag { font-weight: 400; color: var(--faint); font-size: 12px; margin-left: 6px; }
+.card.thm  { border-left-color: var(--a-dk); }
+.card.def  { border-left-color: var(--n-dk); }
+.card.ex   { border-left-color: var(--e-dk); background: var(--e-bg); }
+.card.warn { border-left-color: #c23d3d; background: #fdf0f0; }
+.card p + p { margin-top: 4px; }
+.card ul { margin: 4px 0 2px 18px; }
+.card li + li { margin-top: 2px; }
+.dm { margin: 5px 0 3px; text-align: center; }   /* display math block */
+
+.small { font-size: 12.5px; color: var(--muted); }
+.note  { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; border: 1px solid; vertical-align: -2px; }
+
+/* ---------- panel sub-headings ---------- */
+.panel > h3.subhead, .subhead {
+  font-size: 17px; font-weight: 700; margin: 14px 0 9px;
+  padding: 10px 0 0; border: none; border-top: 1.5px dashed var(--rule);
+  background: none; border-radius: 0; display: block;
+}
+
+/* ---------- hyperbolicity definition cells + eigenvalue icons ---------- */
+.hypdef { display: flex; gap: 10px; margin-bottom: 10px; }
+.hcell {
+  flex: 1; display: flex; gap: 8px; align-items: center;
+  background: var(--n-bg); border: 1px solid var(--n-bd); border-radius: 10px;
+  padding: 7px 9px; font-size: 13px;
+}
+.eig { width: 54px; height: 54px; flex: none; background: #fff; border: 1px solid var(--rule); border-radius: 8px; }
+
+/* ---------- phase-portrait icon strip ---------- */
+.portraits { display: flex; gap: 10px; justify-content: space-between; margin-top: 10px; }
+.portraits figure { text-align: center; flex: 1; }
+.portraits .pp { width: 62px; height: 62px; background: #fff; border: 1px solid var(--rule); border-radius: 9px; }
+.portraits figcaption { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ---------- dictionary table (flows vs maps) ---------- */
+.dict { display: flex; flex-direction: column; font-size: 13.5px; }
+.dict .drow { display: grid; grid-template-columns: 1.15fr 1fr; gap: 10px; padding: 4.5px 4px; border-top: 1px solid var(--rule); }
+.dict .drow:first-child { border-top: none; }
+.dict .dhd { font-weight: 700; color: var(--e-dk); }
+
+/* ---------- flow chains (road-to-chaos, normal-form pipeline) ---------- */
+.chain { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+.chain .cbox { border-radius: 10px; padding: 8px 11px; font-size: 13.5px; }
+.chain .cbox .hd { font-weight: 700; }
+.chain .link { display: flex; align-items: center; gap: 8px; padding: 2px 0 2px 22px; }
+.chain .link .arr { font-size: 17px; color: var(--muted); line-height: 1; }
+.chain .link .why { font-size: 12px; color: var(--muted); font-style: italic; }
+
+/* ---------- bifurcation zoo table ---------- */
+.zoo { display: flex; flex-direction: column; font-size: 13px; }
+.zoo .zrow {
+  display: grid; grid-template-columns: 62px 150px 1.1fr 1.15fr 1fr;
+  gap: 12px; padding: 8px 4px; border-top: 1px solid var(--rule); align-items: center;
+}
+.zoo .zhead { border-top: none; padding-bottom: 2px; font-weight: 700; color: var(--b-dk); font-size: 13.5px; }
+.zoo .zrow > div:nth-child(2) { font-size: 13.5px; }
+.btcell .btsvg { width: 130px; height: 84px; float: left; margin-right: 8px; background: #fff; border: 1px solid var(--rule); border-radius: 8px; }
+
+/* ---------- Sharkovskii ordering strip ---------- */
+.sharko { margin-bottom: 10px; }
+.sharko .srow {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  font-size: 13px; color: var(--muted);
+  background: var(--c-bg); border: 1px solid var(--c-bd); border-radius: 10px;
+  padding: 7px 9px;
+}
+.sharko .schip { background: #fff; border: 1px solid var(--c-bd); border-radius: 6px; padding: 1px 6px; color: var(--ink); }
+.sharko .schip.hot { background: #c23d3d; border-color: #c23d3d; }
+.sharko .schip.hot .katex { color: #fff; }
+.sharko .sdots { padding: 0 2px; }
+
+/* ---------- pipeline (horizontal chain) ---------- */
+.pipeline { display: flex; align-items: stretch; gap: 6px; }
+.pipeline .pbox { flex: 1; border-radius: 10px; padding: 8px 10px; font-size: 13px; border: 1px solid var(--n-bd); }
+.pipeline .pbox.hue-b { background: var(--b-bg); border-color: var(--b-bd); }
+.pipeline .pbox.hue-e { background: var(--e-bg); border-color: var(--e-bd); }
+.pipeline .pbox.hue-n { background: var(--n-bg); }
+.pipeline .parr { align-self: center; font-size: 20px; color: var(--muted); flex: none; }
+
+/* ---------- print: poster ---------- */
+@media print { body.poster { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+
+/* ---------- A3 paginated variant ---------- */
+body.a3 { font-size: 13px; }
+body.a3 .page.onecol .cards { flex-direction: row; }
+body.a3 .page.onecol .cards .card { flex: 1 1 0; min-width: 0; }
+body.a3 .sheet { width: 100%; }
+body.a3 .masthead { padding-bottom: 10px; }
+body.a3 .masthead h1 { font-size: 28px; }
+body.a3 .page { display: flex; gap: 16px; align-items: flex-start; break-after: page; break-inside: avoid; margin-bottom: 4px; }
+body.a3 .page:last-child { break-after: auto; }
+body.a3 .pcol { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+body.a3 { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body.a3 .hero { margin: 0; }
+body.a3 .hero-head h2 { font-size: 22px; }
+body.a3 .hprop { padding-top: 5px; padding-bottom: 6px; }
+body.a3 .hprop .hpf .katex { font-size: 1.08em; }
+body.a3 .hcol { padding: 8px 8px 7px; }
+body.a3 .hnote { font-size: 12.5px; }
