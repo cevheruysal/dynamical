@@ -23,7 +23,8 @@ if (mode === 'all' || mode === 'poster' || mode === 'png') {
   if (mode !== 'png') {
     await page.pdf({
       path: out('dynamical-systems-cheatsheet.pdf'),
-      width: `${w}px`, height: `${h}px`,
+      width: `${w + 2}px`, height: `${h + 2}px`,
+      margin: { top: 0, bottom: 0, left: 0, right: 0 },
       printBackground: true, pageRanges: '1',
     });
     console.log('wrote poster pdf');
